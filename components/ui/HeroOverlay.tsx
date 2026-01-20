@@ -92,11 +92,11 @@ const statusTextVariants = {
 
 const NOISE_PATTERN = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E")`;
 
-const WAVES_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 12 Q 6 6 12 12 T 24 12' stroke='rgba(255,255,255,0.5)' fill='none' stroke-width='2'/%3E%3C/svg%3E")`;
-const DOT_PATTERN = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='8' r='2' fill='rgba(255,255,255,0.5)'/%3E%3C/svg%3E")`;
-const STRIPE_PATTERN = `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2 M6,8 l4,-4 M9,11 l2,-2' stroke='rgba(255,255,255,0.4)' stroke-width='1.5'/%3E%3C/svg%3E")`;
-const CROSS_PATTERN = `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L20 20 M20 0 L0 20' stroke='rgba(255,255,255,0.4)' stroke-width='1'/%3E%3C/svg%3E")`;
-const HEX_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0 L24 6 L24 18 L12 24 L0 18 L0 6 Z' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='1'/%3E%3C/svg%3E")`;
+const WAVES_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 12 C4 6 8 6 12 12 C16 18 20 18 24 12' stroke='rgba(255,255,255,0.9)' fill='none' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")`;
+const DOT_PATTERN = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='8' r='2.5' fill='rgba(255,255,255,1)'/%3E%3C/svg%3E")`;
+const STRIPE_PATTERN = `url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-1.5,1.5 l3,-3 M0,6 l6,-6 M4.5,7.5 l3,-3 M9,12 l6,-6 M13.5,16.5 l3,-3' stroke='rgba(255,255,255,1)' stroke-width='12'/%3E%3C/svg%3E")`;
+const CROSS_PATTERN = `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L20 20 M20 0 L0 20' stroke='rgba(255,255,255,0.85)' stroke-width='1.5'/%3E%3C/svg%3E")`;
+const HEX_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0 L24 6 L24 18 L12 24 L0 18 L0 6 Z' fill='none' stroke='rgba(255,255,255,1)' stroke-width='1.5'/%3E%3C/svg%3E")`;
 
 function AnimatedLetter({
   letter,
@@ -106,6 +106,8 @@ function AnimatedLetter({
   hoverStyle = {},
   mouseX,
   mouseY,
+  isGrace = false,
+  cardsVisible = true,
 }: {
   letter: string;
   index: number;
@@ -114,6 +116,8 @@ function AnimatedLetter({
   hoverStyle?: React.CSSProperties;
   mouseX: any;
   mouseY: any;
+  isGrace?: boolean;
+  cardsVisible?: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const letterRef = useRef<HTMLSpanElement>(null);
@@ -148,16 +152,21 @@ function AnimatedLetter({
     return Math.hypot((x as number) - center.x, (y as number) - center.y);
   });
 
-  // Proximity Effects: Variable Font Weight
-  // Map distance to weight: Close (0px) -> 900, Far (200px) -> 600
-  // Note: We use a string for fontVariationSettings because fontWeight numerical animation can be jerky in some browsers
-  // But Framer Motion handles numbers well. Let's try direct fontWeight first if using standard variable font features.
-  // Actually, 'fontVariationSettings' is more reliable for smooth interpolation.
+  // Determine overlap with polaroids using simplified centers
+  // Removed per-letter overlap checks for performance; letters no longer compute overlap state.
 
-  const weight = useTransform(distance, [0, 200], [900, 600]);
+  // Proximity Effects: Variable Font Weight + visual thickening via text-shadow
+  // Map distance to weight: Close (0px) -> 1000 (perceived heavier), Far (200px) -> 600
+  // Also map a dynamic text shadow to visually augment weight at close distances (since many fonts cap at 900)
 
-  // We need to pass this as a style.
-  // Since 'fontWeight' expects numbers or strings, motion value works.
+  const weight = useTransform(distance, [0, 200], [1000, 600]);
+  const shadow = useTransform(
+    distance,
+    [0, 200],
+    ["0 0 4px rgba(0,0,0,0.25), 0 0 8px rgba(0,0,0,0.15)", "none"],
+  );
+
+  // We need to pass these as styles. Motion values work for both properties.
 
   return (
     <motion.div
@@ -173,10 +182,15 @@ function AnimatedLetter({
         style={{
           display: letter === " " ? "inline" : "inline-block",
           fontWeight: weight,
+          textShadow: shadow,
           // Removed scale/y as requested
           ...textStyle,
           ...(isHovered ? hoverStyle : {}),
+          // If this is GRACE and not hovered, render a solid color; only enable difference blending when overlapping a polaroid
+          ...(isGrace && !isHovered ? {} : {}),
           transition: "background-image 0.3s ease, color 0.3s ease",
+          // Removed blend effect — render text normally
+          mixBlendMode: undefined,
         }}
       >
         {letter === " " ? "\u00A0" : letter}
@@ -210,6 +224,7 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
   // Mouse tracking for proximity effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -223,57 +238,57 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
     };
   }, [mouseX, mouseY]);
 
-  // Generate distinct gradients/patterns for each hover state
-  const getHoverPattern = (index: number) => {
-    const i = index % 9;
+  // Removed polaroid overlap detection to simplify and improve performance.
+  // Blend effect was removed in favor of shifting card start positions outward.
+  // (No runtime work needed here.)
 
-    // 0: Simplex Noise (Approximated with fluid noise gradient)
-    if (i === 0) {
-      return `${NOISE_PATTERN}, radial-gradient(circle at 60% 40%, #ff9a9e 0%, #fecfef 20%, #a18cd1 60%, #fbc2eb 100%)`;
-    }
-    // 1: Waves (Clean vector waves over gradient)
-    if (i === 1) {
-      return `${WAVES_PATTERN}, linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)`;
-    }
-    // 2: Dot Grid (Clean dots over gradient)
-    if (i === 2) {
-      return `${DOT_PATTERN}, linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)`;
-    }
-    // 3: Diagonal Stripes (Black/White or Silver)
-    if (i === 3) {
-      return `${STRIPE_PATTERN}, linear-gradient(to bottom, #2b5876 0%, #4e4376 100%)`; // Dark Purple/Blue
-    }
-    // 4: Crosshatch
-    if (i === 4) {
-      return `${CROSS_PATTERN}, linear-gradient(to right, #4facfe 0%, #00f2fe 100%)`; // Bright Blue
-    }
-    // 5: Hexagons
-    if (i === 5) {
-      return `${HEX_PATTERN}, linear-gradient(180deg, #43e97b 0%, #38f9d7 100%)`; // Turquoise/Green
-    }
-
-    const patterns = [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "", // Placeholders 0-5
-      // 6: Liquid Metal (Silver/Grey/White)
-      "linear-gradient(45deg, #E0E0E0 0%, #707070 50%, #F5F5F5 100%)",
-      // 7: Holographic Prism
-      "linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%), linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%), linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)",
-      // 8: Mystic Lavender (Lavender/Purple)
-      "radial-gradient(circle at top right, #E6E6FA 0%, #9370DB 50%, #483D8B 100%)",
+  // Generate distinct hover styles without gradients (solid fill + optional overlay patterns)
+  const getHoverStyle = (index: number) => {
+    const colors = [
+      "#ffbfe1",
+      "#cbed68",
+      "#8ce4ff",
+      "#f1e6c9",
+      "#abdadc",
+      "#dfdce6",
+      "#f39f9f",
+      "#fee8d9",
+      "#feffc4",
+      "#ffdcdc",
+      "#cb9df0",
     ];
-    // For the rest, keep the grain
-    return `${NOISE_PATTERN}, ${patterns[i]}`;
+
+    const patternLayers = [
+      `${NOISE_PATTERN}, ${CROSS_PATTERN}`,
+      `${NOISE_PATTERN}, ${WAVES_PATTERN}`,
+      `${NOISE_PATTERN}, ${DOT_PATTERN}`,
+      `${NOISE_PATTERN}, ${STRIPE_PATTERN}`,
+      `${NOISE_PATTERN}, ${CROSS_PATTERN}`,
+      `${NOISE_PATTERN}, ${HEX_PATTERN}`,
+      `${NOISE_PATTERN}, ${WAVES_PATTERN}`,
+      `${NOISE_PATTERN}, ${STRIPE_PATTERN}`,
+      NOISE_PATTERN,
+    ];
+
+    // Avoid assigning the same color to adjacent letters (e.g., R and A)
+    const len = colors.length;
+    let color = colors[index % len];
+    const prevColor = colors[(index - 1 + len) % len];
+    if (color === prevColor) {
+      // Pick the next color in the palette to avoid duplicates
+      color = colors[(index + 1) % len];
+    }
+
+    return {
+      backgroundColor: color,
+      backgroundImage: patternLayers[index % patternLayers.length],
+    } as React.CSSProperties;
   };
 
   // Defined styles for reuse
   const graceStyle = {
     fontFamily: "var(--font-inter)",
-    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #ffffff, #bbbbbb)`,
+    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #eeeeee, #f5f2f2)`,
     backgroundClip: "text",
     WebkitBackgroundClip: "text",
     color: "transparent",
@@ -283,7 +298,7 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
 
   const yuenStyle = {
     fontFamily: "var(--font-inter)",
-    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #0000FF, #3333FF)`,
+    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #fa8112, #fc7001)`,
     backgroundClip: "text",
     WebkitBackgroundClip: "text",
     color: "transparent",
@@ -291,12 +306,13 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
     filter: "contrast(120%)",
   };
 
+  const cardsVisible = usePortfolioStore((state) => state.cardsVisible);
+
   return (
     <motion.div
-      className="fixed inset-0 flex items-center justify-center z-10 pointer-events-none"
+      className="fixed inset-0 flex items-center justify-center z-10 pointer-events-none hero-text"
       style={{
         opacity: heroTextOpacity,
-        mixBlendMode: "normal",
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: heroTextOpacity }}
@@ -323,10 +339,12 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     key={`grace-${i}`}
                     letter={letter}
                     index={i}
+                    isGrace={true}
+                    cardsVisible={cardsVisible}
                     highlightColor="rgba(255, 255, 255, 0.4)"
                     textStyle={graceStyle}
                     hoverStyle={{
-                      backgroundImage: getHoverPattern(i),
+                      ...getHoverStyle(i),
                     }}
                     mouseX={mouseX}
                     mouseY={mouseY}
@@ -345,10 +363,12 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     key={`yuen-${i}`}
                     letter={letter}
                     index={graceName.length + i}
+                    isGrace={false}
+                    cardsVisible={cardsVisible}
                     highlightColor="rgba(0, 255, 255, 0.4)"
                     textStyle={yuenStyle}
                     hoverStyle={{
-                      backgroundImage: getHoverPattern(graceName.length + i),
+                      ...getHoverStyle(graceName.length + i),
                     }}
                     mouseX={mouseX}
                     mouseY={mouseY}
