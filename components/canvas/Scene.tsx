@@ -38,8 +38,16 @@ function generateCardPositions(): CardData[] {
     const dist = 8 - z;
     const scale = dist / 10; // Normalized to ~1 at z=-2
 
-    const x = spec.start[0] * scale + (seededRandom(seed) - 0.5) * 1.5;
-    const y = spec.start[1] * scale + (seededRandom(seed + 1) - 0.5) * 1.5;
+    // Push card start positions outward, with extra push for the top-right card (index 3)
+    const baseOutward = 1.25;
+    const extra = i === 3 ? 0.35 : 0; // stronger push for top-right
+    const outwardFactor = baseOutward + extra;
+
+    const x =
+      spec.start[0] * outwardFactor * scale + (seededRandom(seed) - 0.5) * 1.5;
+    const y =
+      spec.start[1] * outwardFactor * scale +
+      (seededRandom(seed + 1) - 0.5) * 1.5;
 
     const tiltX = (seededRandom(seed + 5) - 0.5) * 0.17;
     const tiltY = (seededRandom(seed + 6) - 0.5) * 0.1;
