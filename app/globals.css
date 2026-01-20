@@ -48,7 +48,7 @@ body {
 
 /* Hero text with blend mode */
 .hero-text {
-  mix-blend-mode: difference;
+  /* removed mix-blend-mode to prevent unintended blending with scene */
   pointer-events: none;
 }
 
