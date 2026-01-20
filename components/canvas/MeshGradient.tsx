@@ -11,10 +11,10 @@ const GradientMaterial = shaderMaterial(
   {
     uTime: 0,
     uOpacity: 1.0,
-    uColor1: new THREE.Color("#050511"), // Navy
-    uColor2: new THREE.Color("#10103a"), // Slightly lighter navy/purple
-    uColor3: new THREE.Color("#0000aa"), // Deep blue
-    uColor4: new THREE.Color("#000033"), // Darkest blue
+    uColor1: new THREE.Color("#2b2b2b"), // slightly lighter base
+    uColor2: new THREE.Color("#4b4b4b"), // slightly lighter mid
+    uColor3: new THREE.Color("#7a7a7a"), // slightly lighter highlight
+    uColor4: new THREE.Color("#171717"), // slightly lighter deep
   },
   // vertex shader
   `
