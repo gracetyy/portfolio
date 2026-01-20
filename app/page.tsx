@@ -1,29 +1,28 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import dynamic from 'next/dynamic'
-import { motion } from 'framer-motion'
-import { HeroOverlay, Navigation } from '@/components/ui'
-import { useScrollPhysics } from '@/hooks'
-import { usePortfolioStore } from '@/store'
+import { useEffect } from "react";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import { HeroOverlay, Navigation, ManilaFolder } from "@/components/ui";
+import { useScrollPhysics } from "@/hooks";
+import { usePortfolioStore } from "@/store";
 
 // Dynamic import for 3D Scene - must disable SSR for R3F
-const Scene = dynamic(
-  () => import('@/components/canvas/Scene'),
-  { ssr: false }
-)
+const Scene = dynamic(() => import("@/components/canvas/Scene"), {
+  ssr: false,
+});
 
 // Section component for scroll content
 function Section({
   id,
   title,
-  className = '',
+  className = "",
   children,
 }: {
-  id: string
-  title: string
-  className?: string
-  children?: React.ReactNode
+  id: string;
+  title: string;
+  className?: string;
+  children?: React.ReactNode;
 }) {
   return (
     <section
@@ -35,34 +34,34 @@ function Section({
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: "-100px" }}
       >
         {title}
       </motion.h2>
       {children}
     </section>
-  )
+  );
 }
 
 // Projects section content
 function ProjectsSection() {
   const projects = [
     {
-      title: 'Project Alpha',
-      description: 'A revolutionary web application',
-      tech: ['React', 'Node.js', 'PostgreSQL'],
+      title: "Project Alpha",
+      description: "A revolutionary web application",
+      tech: ["React", "Node.js", "PostgreSQL"],
     },
     {
-      title: 'Project Beta',
-      description: 'Mobile-first design system',
-      tech: ['Flutter', 'Firebase', 'Figma'],
+      title: "Project Beta",
+      description: "Mobile-first design system",
+      tech: ["Flutter", "Firebase", "Figma"],
     },
     {
-      title: 'Project Gamma',
-      description: 'AI-powered analytics platform',
-      tech: ['Python', 'TensorFlow', 'AWS'],
+      title: "Project Gamma",
+      description: "AI-powered analytics platform",
+      tech: ["Python", "TensorFlow", "AWS"],
     },
-  ]
+  ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
@@ -92,7 +91,7 @@ function ProjectsSection() {
         </motion.div>
       ))}
     </div>
-  )
+  );
 }
 
 // About section content
@@ -106,25 +105,26 @@ function AboutSection() {
       viewport={{ once: true }}
     >
       <p className="text-lg text-white/70 leading-relaxed mb-6">
-        I&apos;m a passionate developer currently pursuing my Computer Science degree
-        at the University of Hong Kong. I love building things that make a difference
-        and solving complex problems with elegant solutions.
+        I&apos;m a passionate developer currently pursuing my Computer Science
+        degree at the University of Hong Kong. I love building things that make
+        a difference and solving complex problems with elegant solutions.
       </p>
       <p className="text-lg text-white/70 leading-relaxed">
-        When I&apos;m not coding, you&apos;ll find me exploring new technologies,
-        contributing to open source, or working on creative side projects.
+        When I&apos;m not coding, you&apos;ll find me exploring new
+        technologies, contributing to open source, or working on creative side
+        projects.
       </p>
     </motion.div>
-  )
+  );
 }
 
 // Contact section content
 function ContactSection() {
   const links = [
-    { label: 'GitHub', href: 'https://github.com' },
-    { label: 'LinkedIn', href: 'https://linkedin.com' },
-    { label: 'Email', href: 'mailto:hello@graceyuen.dev' },
-  ]
+    { label: "GitHub", href: "https://github.com" },
+    { label: "LinkedIn", href: "https://linkedin.com" },
+    { label: "Email", href: "mailto:hello@graceyuen.dev" },
+  ];
 
   return (
     <div className="flex flex-col items-center">
@@ -149,22 +149,22 @@ function ContactSection() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default function Home() {
   // Initialize scroll physics
-  useScrollPhysics()
+  useScrollPhysics();
 
-  const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll)
+  const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
   // Prevent scroll during initial load
   useEffect(() => {
-    document.body.style.overflow = 'auto'
+    document.body.style.overflow = "auto";
     return () => {
-      document.body.style.overflow = 'auto'
-    }
-  }, [])
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   return (
     <main className="relative">
@@ -177,33 +177,24 @@ export default function Home() {
 
       {/* Scroll Container */}
       <div className="scroll-container">
-        {/* Hero Scroll Space - extended for cards to fully pass camera */}
-        <div className="h-[1300vh]" />
+        {/* Hero Scroll Space - adjusted to 800vh so content arrives right after cards exit */}
+        <div className="h-[800vh]" />
+
+        {/* Manila Folder / About Section */}
+        <ManilaFolder />
 
         {/* Projects Section */}
-        <Section
-          id="projects"
-          title="Projects"
-          className="bg-navy"
-        >
+        <Section id="projects" title="Projects" className="bg-navy">
           <ProjectsSection />
         </Section>
 
         {/* About Section */}
-        <Section
-          id="about"
-          title="About"
-          className="bg-navy"
-        >
+        <Section id="about" title="About" className="bg-navy">
           <AboutSection />
         </Section>
 
         {/* Experience Section */}
-        <Section
-          id="experience"
-          title="Experience"
-          className="bg-navy"
-        >
+        <Section id="experience" title="Experience" className="bg-navy">
           <motion.div
             className="max-w-2xl"
             initial={{ opacity: 0 }}
@@ -213,19 +204,19 @@ export default function Home() {
             <div className="space-y-8">
               {[
                 {
-                  role: 'Software Developer Intern',
-                  company: 'Tech Company',
-                  period: '2024',
+                  role: "Software Developer Intern",
+                  company: "Tech Company",
+                  period: "2024",
                 },
                 {
-                  role: 'Teaching Assistant',
-                  company: 'HKU Computer Science',
-                  period: '2023 - Present',
+                  role: "Teaching Assistant",
+                  company: "HKU Computer Science",
+                  period: "2023 - Present",
                 },
                 {
-                  role: 'Freelance Developer',
-                  company: 'Various Clients',
-                  period: '2022 - Present',
+                  role: "Freelance Developer",
+                  company: "Various Clients",
+                  period: "2022 - Present",
                 },
               ].map((exp, index) => (
                 <motion.div
@@ -246,17 +237,15 @@ export default function Home() {
         </Section>
 
         {/* Contact Section */}
-        <Section
-          id="contact"
-          title="Get in Touch"
-          className="bg-navy"
-        >
+        <Section id="contact" title="Get in Touch" className="bg-navy">
           <ContactSection />
         </Section>
 
         {/* Footer */}
         <footer className="py-8 text-center text-white/40 text-sm bg-navy">
-          <p>&copy; {new Date().getFullYear()} Grace Yuen. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Grace Yuen. All rights reserved.
+          </p>
         </footer>
       </div>
 
@@ -268,5 +257,5 @@ export default function Home() {
         }}
       />
     </main>
-  )
+  );
 }
