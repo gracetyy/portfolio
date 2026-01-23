@@ -124,9 +124,9 @@ function CanvasWrapper() {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.2,
         powerPreference: "high-performance",
+        alpha: true,
       }}
     >
-      <MeshGradient />
       <Suspense fallback={<LoadingFallback />}>
         <SceneContent />
       </Suspense>
@@ -165,6 +165,7 @@ export function Scene() {
             transition: "opacity 0.5s ease-out",
           }}
         >
+          <MeshGradient />
           <CanvasWrapper />
           {/* Bottom gradient for smooth transition */}
           <div
