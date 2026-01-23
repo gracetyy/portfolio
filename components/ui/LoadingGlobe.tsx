@@ -110,7 +110,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               cy="0"
               r="100"
               fill="none"
-              stroke="#0000FF"
+              stroke="#ea5d00"
               strokeWidth="1.5"
             />
 
@@ -123,7 +123,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
                 rx={line.radius}
                 ry={line.radius * 0.25}
                 fill="none"
-                stroke="#0000FF"
+                stroke="#ea5d00"
                 strokeWidth="1"
                 opacity="0.7"
               />
@@ -136,7 +136,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               rx="100"
               ry="25"
               fill="none"
-              stroke="#0000FF"
+              stroke="#ea5d00"
               strokeWidth="1.2"
               opacity="0.9"
             />
@@ -155,7 +155,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
                   rx={100 * scaleX}
                   ry="100"
                   fill="none"
-                  stroke="#0000FF"
+                  stroke="#ea5d00"
                   strokeWidth="1"
                   opacity={0.3 + scaleX * 0.5}
                 />
@@ -169,14 +169,14 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               rx={100 * getLongitudeScaleX(0)}
               ry="100"
               fill="none"
-              stroke="#0000FF"
+              stroke="#ea5d00"
               strokeWidth="1.2"
               opacity="0.9"
             />
 
             {/* Poles markers */}
-            <circle cx="0" cy="-100" r="3" fill="#0000FF" opacity="0.8" />
-            <circle cx="0" cy="100" r="3" fill="#0000FF" opacity="0.8" />
+            <circle cx="0" cy="-100" r="3" fill="#ea5d00" opacity="0.8" />
+            <circle cx="0" cy="100" r="3" fill="#ea5d00" opacity="0.8" />
           </g>
         </svg>
       </div>
