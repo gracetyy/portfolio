@@ -2,7 +2,7 @@
 @config "../tailwind.config.ts";
 
 :root {
-  --navy: #050511;
+  --navy: #222222;
   --electric-blue: #0000FF;
   --electric-yellow: #FFFF00;
   --card-white: #FAFAFA;
@@ -52,6 +52,19 @@ body {
   pointer-events: none;
 }
 
+/* Museo Moderno stylistic set helpers */
+.museo-ss01 {
+  font-family: var(--font-museo) !important;
+  font-feature-settings: "ss01" 1 !important;
+  -webkit-font-feature-settings: "ss01" 1 !important;
+}
+
+/* Disable ss01 for a specific glyph (use on the N) */
+.museo-n-normal {
+  font-feature-settings: "ss01" 0 !important;
+  -webkit-font-feature-settings: "ss01" 0 !important;
+}
+
 .hero-text-white {
   color: white;
 }
@@ -83,6 +96,18 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+/* Animated gradient pulse for text hover */
+@keyframes meshPulse {
+  0%, 100% {
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+  }
+  50% {
+    background-size: 150% 150%;
+    background-position: 50% 50%;
+  }
 }
 
 /* Hamburger menu lines */
@@ -216,4 +241,74 @@ canvas {
 
 .variable-weight:hover {
   font-variation-settings: 'wght' 700;
+}
+
+/* Mesh Gradient Text Animation */
+@keyframes mesh-pulse {
+  0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+  50% { background-position: 100% 50%; filter: hue-rotate(10deg); }
+  100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+}
+
+/* Gradient flow animation for hero text */
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.text-mesh {
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Default mesh (will be overridden by inline styles) */
+  background-image: linear-gradient(to right, #fff, #aaa);
+  transition: background-image 0.5s ease;
+  animation: mesh-pulse 8s ease-in-out infinite;
+}
+
+/* Mesh-like gradient keyframes for organic shader-like movement */
+@keyframes meshGradientFlow {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%, 0% 100%, 100% 50%, 50% 0%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, 50% 100%, 100% 50%;
+  }
+  75% {
+    background-position: 0% 100%, 100% 0%, 0% 50%, 50% 100%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%;
+  }
+}
+
+/* Hero text gradient classes - using classes to avoid React style conflicts */
+.hero-gradient-default {
+  /* Mesh-like gradient using multiple radial gradients for organic shader look */
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 30%, rgba(232, 180, 216, 0.9) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 80% 70%, rgba(183, 148, 244, 0.85) 0%, transparent 45%),
+    radial-gradient(ellipse 90% 120% at 50% 10%, rgba(147, 197, 253, 0.9) 0%, transparent 50%),
+    radial-gradient(ellipse 110% 90% at 70% 90%, rgba(255, 255, 255, 0.8) 0%, transparent 40%);
+  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: meshGradientFlow 8s ease-in-out infinite;
+}
+
+.hero-gradient-hover {
+  background-image: linear-gradient(135deg, #FF0080 0%, #7928CA 25%, #00DFD8 50%, #FF4D4D 75%, #FF0080 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 2s ease-in-out infinite;
 }
