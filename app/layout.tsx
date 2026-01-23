@@ -1,13 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { inter, museoModerno } from "./fonts";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-  // Only 'wght' and 'opsz' are valid axes for Inter in next/font/google
-});
 
 export const metadata: Metadata = {
   title: "Grace Yuen | Portfolio",
@@ -50,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${museoModerno.variable}`}>
       <body className={`${inter.className} bg-navy antialiased`}>
         {children}
       </body>
