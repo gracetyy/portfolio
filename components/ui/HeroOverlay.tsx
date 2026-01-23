@@ -9,6 +9,7 @@ import {
   useMotionValue,
 } from "framer-motion";
 import { usePortfolioStore } from "@/store";
+import { MeshGradient as PaperMeshGradient } from "@paper-design/shaders-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -101,30 +102,27 @@ const HEX_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewB
 function AnimatedLetter({
   letter,
   index,
-  highlightColor = "rgba(255,255,255,0.5)",
-  textStyle = {},
-  hoverStyle = {},
+  gradientClassName = "hero-gradient-default",
   mouseX,
   mouseY,
-  isGrace = false,
-  cardsVisible = true,
+  highlightColor = "rgba(255,255,255,0.5)",
+  onHoverChange,
 }: {
   letter: string;
   index: number;
-  highlightColor?: string;
-  textStyle?: React.CSSProperties;
-  hoverStyle?: React.CSSProperties;
+  gradientClassName?: string;
   mouseX: any;
   mouseY: any;
+  highlightColor?: string;
   isGrace?: boolean;
   cardsVisible?: boolean;
+  onHoverChange?: (hovering: boolean) => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const letterRef = useRef<HTMLSpanElement>(null);
   const [center, setCenter] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Measure center for proximity effect
     if (letterRef.current) {
       const rect = letterRef.current.getBoundingClientRect();
       setCenter({
@@ -132,19 +130,6 @@ function AnimatedLetter({
         y: rect.top + rect.height / 2,
       });
     }
-
-    // Optional: Re-measure on resize
-    const handleResize = () => {
-      if (letterRef.current) {
-        const rect = letterRef.current.getBoundingClientRect();
-        setCenter({
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        });
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const distance = useTransform([mouseX, mouseY], ([x, y]) => {
@@ -152,56 +137,46 @@ function AnimatedLetter({
     return Math.hypot((x as number) - center.x, (y as number) - center.y);
   });
 
-  // Determine overlap with polaroids using simplified centers
-  // Removed per-letter overlap checks for performance; letters no longer compute overlap state.
-
-  // Proximity Effects: Variable Font Weight + visual thickening via text-shadow
-  // Map distance to weight: Close (0px) -> 1000 (perceived heavier), Far (200px) -> 600
-  // Also map a dynamic text shadow to visually augment weight at close distances (since many fonts cap at 900)
-
-  const weight = useTransform(distance, [0, 200], [1000, 600]);
-  const shadow = useTransform(
-    distance,
-    [0, 200],
-    ["0 0 4px rgba(0,0,0,0.25), 0 0 8px rgba(0,0,0,0.15)", "none"],
-  );
-
-  // We need to pass these as styles. Motion values work for both properties.
+  const weight = useTransform(distance, [0, 200], [900, 400]);
 
   return (
     <motion.div
-      className="relative inline-block overflow-hidden py-4 -my-4 align-top cursor-pointer pointer-events-auto"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      className="relative inline-block overflow-visible py-4 -my-4 align-top cursor-pointer pointer-events-auto"
+      onHoverStart={() => {
+        setIsHovered(true);
+        onHoverChange?.(true);
+      }}
+      onHoverEnd={() => {
+        setIsHovered(false);
+        onHoverChange?.(false);
+      }}
     >
+      {/* Text layer with gradient fill */}
       <motion.span
         ref={letterRef}
         variants={letterVariants}
         custom={index}
-        className="inline-block relative z-10"
+        className={`inline-block relative z-10 ${
+          letter.toUpperCase() === "N" ? "museo-n-normal" : "museo-ss01"
+        } ${gradientClassName}`}
         style={{
           display: letter === " " ? "inline" : "inline-block",
-          fontWeight: weight,
-          textShadow: shadow,
-          // Removed scale/y as requested
-          ...textStyle,
-          ...(isHovered ? hoverStyle : {}),
-          // If this is GRACE and not hovered, render a solid color; only enable difference blending when overlapping a polaroid
-          ...(isGrace && !isHovered ? {} : {}),
-          transition: "background-image 0.3s ease, color 0.3s ease",
-          // Removed blend effect — render text normally
-          mixBlendMode: undefined,
+          ["--wght" as any]: weight,
+          ["fontFeatureSettings" as any]:
+            letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
+          ["WebkitFontFeatureSettings" as any]:
+            letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
         }}
       >
         {letter === " " ? "\u00A0" : letter}
       </motion.span>
 
-      {/* Sweep Effect */}
+      {/* Sweep Effect (Optional overlay) */}
       {letter !== " " && (
         <motion.div
           variants={sweepVariants}
           custom={index}
-          className="absolute inset-0 z-20 pointer-events-none"
+          className="absolute inset-0 z-20 pointer-events-none mix-blend-screen" 
           style={{
             background: `linear-gradient(90deg, transparent 0%, ${highlightColor} 50%, transparent 100%)`,
             transform: "skewX(-20deg)",
@@ -218,13 +193,13 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
 
   const graceName = "GRACE";
   const yuenName = "YUEN";
+  const [isAnyHover, setIsAnyHover] = useState(false);
 
   const shouldShow = isSceneReady || fallbackMode;
 
   // Mouse tracking for proximity effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -238,73 +213,9 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
     };
   }, [mouseX, mouseY]);
 
-  // Removed polaroid overlap detection to simplify and improve performance.
-  // Blend effect was removed in favor of shifting card start positions outward.
-  // (No runtime work needed here.)
-
-  // Generate distinct hover styles without gradients (solid fill + optional overlay patterns)
-  const getHoverStyle = (index: number) => {
-    const colors = [
-      "#ffbfe1",
-      "#cbed68",
-      "#8ce4ff",
-      "#f1e6c9",
-      "#abdadc",
-      "#dfdce6",
-      "#f39f9f",
-      "#fee8d9",
-      "#feffc4",
-      "#ffdcdc",
-      "#cb9df0",
-    ];
-
-    const patternLayers = [
-      `${NOISE_PATTERN}, ${CROSS_PATTERN}`,
-      `${NOISE_PATTERN}, ${WAVES_PATTERN}`,
-      `${NOISE_PATTERN}, ${DOT_PATTERN}`,
-      `${NOISE_PATTERN}, ${STRIPE_PATTERN}`,
-      `${NOISE_PATTERN}, ${CROSS_PATTERN}`,
-      `${NOISE_PATTERN}, ${HEX_PATTERN}`,
-      `${NOISE_PATTERN}, ${WAVES_PATTERN}`,
-      `${NOISE_PATTERN}, ${STRIPE_PATTERN}`,
-      NOISE_PATTERN,
-    ];
-
-    // Avoid assigning the same color to adjacent letters (e.g., R and A)
-    const len = colors.length;
-    let color = colors[index % len];
-    const prevColor = colors[(index - 1 + len) % len];
-    if (color === prevColor) {
-      // Pick the next color in the palette to avoid duplicates
-      color = colors[(index + 1) % len];
-    }
-
-    return {
-      backgroundColor: color,
-      backgroundImage: patternLayers[index % patternLayers.length],
-    } as React.CSSProperties;
-  };
-
-  // Defined styles for reuse
-  const graceStyle = {
-    fontFamily: "var(--font-inter)",
-    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #eeeeee, #f5f2f2)`,
-    backgroundClip: "text",
-    WebkitBackgroundClip: "text",
-    color: "transparent",
-    WebkitTextFillColor: "transparent",
-    filter: "contrast(120%)",
-  };
-
-  const yuenStyle = {
-    fontFamily: "var(--font-inter)",
-    backgroundImage: `${NOISE_PATTERN}, linear-gradient(to bottom, #fa8112, #fc7001)`,
-    backgroundClip: "text",
-    WebkitBackgroundClip: "text",
-    color: "transparent",
-    WebkitTextFillColor: "transparent",
-    filter: "contrast(120%)",
-  };
+  // Use CSS class names instead of inline styles to avoid React style conflicts
+  const getGradientClassName = (isHover: boolean) =>
+    isHover ? 'hero-gradient-hover' : 'hero-gradient-default';
 
   const cardsVisible = usePortfolioStore((state) => state.cardsVisible);
 
@@ -318,7 +229,7 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
       animate={{ opacity: heroTextOpacity }}
       transition={{ duration: 0.3 }}
     >
-      <div className="text-center select-none pointer-events-auto">
+      <div className="relative text-center select-none pointer-events-auto">
         <AnimatePresence mode="wait">
           {shouldShow && (
             <motion.div
@@ -327,12 +238,11 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className="relative"
             >
               <motion.div
-                className="text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight"
-                style={{
-                  fontFamily: "var(--font-inter)",
-                }}
+                className="flex justify-center flex-wrap text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight museo-ss01"
+                style={{ fontFamily: 'var(--font-museo)' }}
               >
                 {graceName.split("").map((letter, i) => (
                   <AnimatedLetter
@@ -342,21 +252,17 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     isGrace={true}
                     cardsVisible={cardsVisible}
                     highlightColor="rgba(255, 255, 255, 0.4)"
-                    textStyle={graceStyle}
-                    hoverStyle={{
-                      ...getHoverStyle(i),
-                    }}
+                    gradientClassName={getGradientClassName(isAnyHover)}
                     mouseX={mouseX}
                     mouseY={mouseY}
+                    onHoverChange={(h) => setIsAnyHover(h)}
                   />
                 ))}
               </motion.div>
 
               <motion.div
-                className="text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight"
-                style={{
-                  fontFamily: "var(--font-inter)",
-                }}
+                className="flex justify-center flex-wrap text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight museo-ss01"
+                style={{ fontFamily: 'var(--font-museo)' }}
               >
                 {yuenName.split("").map((letter, i) => (
                   <AnimatedLetter
@@ -366,12 +272,10 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     isGrace={false}
                     cardsVisible={cardsVisible}
                     highlightColor="rgba(0, 255, 255, 0.4)"
-                    textStyle={yuenStyle}
-                    hoverStyle={{
-                      ...getHoverStyle(graceName.length + i),
-                    }}
+                    gradientClassName={getGradientClassName(isAnyHover)}
                     mouseX={mouseX}
                     mouseY={mouseY}
+                    onHoverChange={(h) => setIsAnyHover(h)}
                   />
                 ))}
               </motion.div>
