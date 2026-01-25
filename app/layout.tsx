@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { inter, museoModerno } from "./fonts";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Grace Yuen | Portfolio",
@@ -44,10 +45,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${museoModerno.variable}`}>
-      <body className={`${inter.className} bg-navy antialiased`}>
-        <SmoothScroll />
-        {children}
+    <html
+      lang="en"
+      className={`${inter.variable} ${museoModerno.variable}`}
+      suppressHydrationWarning
+    >
+      <body
+        className={`${inter.className} bg-background text-foreground antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SmoothScroll />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
