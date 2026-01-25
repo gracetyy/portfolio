@@ -9,7 +9,7 @@ import {
   useMotionValue,
 } from "framer-motion";
 import { usePortfolioStore } from "@/store";
-import { MeshGradient as PaperMeshGradient } from "@paper-design/shaders-react";
+import { AnimatedLetter } from "./AnimatedLetter";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -98,132 +98,6 @@ const DOT_PATTERN = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewB
 const STRIPE_PATTERN = `url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-1.5,1.5 l3,-3 M0,6 l6,-6 M4.5,7.5 l3,-3 M9,12 l6,-6 M13.5,16.5 l3,-3' stroke='rgba(255,255,255,1)' stroke-width='12'/%3E%3C/svg%3E")`;
 const CROSS_PATTERN = `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L20 20 M20 0 L0 20' stroke='rgba(255,255,255,0.85)' stroke-width='1.5'/%3E%3C/svg%3E")`;
 const HEX_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0 L24 6 L24 18 L12 24 L0 18 L0 6 Z' fill='none' stroke='rgba(255,255,255,1)' stroke-width='1.5'/%3E%3C/svg%3E")`;
-
-function AnimatedLetter({
-  letter,
-  index,
-  mouseX,
-  mouseY,
-  highlightColor = "rgba(255,255,255,0.5)",
-  onHoverChange,
-  isHovered: parentHovered,
-}: {
-  letter: string;
-  index: number;
-  mouseX: any;
-  mouseY: any;
-  highlightColor?: string;
-  isGrace?: boolean;
-  cardsVisible?: boolean;
-  onHoverChange?: (hovering: boolean) => void;
-  isHovered?: boolean;
-}) {
-  const [isHovered, setIsHovered] = useState(false);
-  const letterRef = useRef<HTMLSpanElement>(null);
-  const [center, setCenter] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (letterRef.current) {
-      const rect = letterRef.current.getBoundingClientRect();
-      setCenter({
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-      });
-    }
-  }, []);
-
-  const distance = useTransform([mouseX, mouseY], ([x, y]) => {
-    if (!center.x) return 1000;
-    return Math.hypot((x as number) - center.x, (y as number) - center.y);
-  });
-
-  const weight = useTransform(distance, [0, 200], [900, 400]);
-  // Shader gradient colors - vibrant on hover, subtle default
-  const shaderColors = parentHovered
-    ? ["#FF0080", "#7928CA", "#00DFD8", "#FF4D4D"]
-    : ["#E8B4D8", "#B794F4", "#93C5FD", "#FFFFFF"];
-
-  return (
-    <motion.div
-      className="relative inline-block overflow-visible py-4 -my-4 align-top cursor-pointer pointer-events-auto"
-      onHoverStart={() => {
-        setIsHovered(true);
-        onHoverChange?.(true);
-      }}
-      onHoverEnd={() => {
-        setIsHovered(false);
-        onHoverChange?.(false);
-      }}
-    >
-      {/* Shader gradient layer - masked by the text shape */}
-      {letter !== " " && (
-        <div
-          className="absolute inset-0 z-10 pointer-events-none"
-          style={{
-            WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
-                letter.toUpperCase() === "N" ? 0 : 1
-              }">${letter}</text></svg>`,
-            )}")`,
-            WebkitMaskSize: "100% 100%",
-            WebkitMaskRepeat: "no-repeat",
-            maskImage: `url("data:image/svg+xml,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
-                letter.toUpperCase() === "N" ? 0 : 1
-              }">${letter}</text></svg>`,
-            )}")`,
-            maskSize: "100% 100%",
-            maskRepeat: "no-repeat",
-          }}
-        >
-          <PaperMeshGradient
-            width="100%"
-            height="100%"
-            colors={shaderColors}
-            distortion={parentHovered ? 1.5 : 1}
-            swirl={parentHovered ? 0.8 : 0.6}
-            grainMixer={0.02}
-            speed={parentHovered ? 0.5 : 0.3}
-          />
-        </div>
-      )}
-      {/* Text layer - transparent to show shader through */}
-      <motion.span
-        ref={letterRef}
-        variants={letterVariants}
-        custom={index}
-        className={`inline-block relative z-0 ${
-          letter.toUpperCase() === "N" ? "museo-n-normal" : "museo-ss01"
-        }`}
-        style={{
-          display: letter === " " ? "inline" : "inline-block",
-          color: "transparent",
-          WebkitTextStroke: "0px transparent",
-          ["--wght" as any]: weight,
-          ["fontFeatureSettings" as any]:
-            letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
-          ["WebkitFontFeatureSettings" as any]:
-            letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
-        }}
-      >
-        {letter === " " ? "\u00A0" : letter}
-      </motion.span>
-
-      {/* Sweep Effect (Optional overlay) */}
-      {letter !== " " && (
-        <motion.div
-          variants={sweepVariants}
-          custom={index}
-          className="absolute inset-0 z-20 pointer-events-none mix-blend-screen"
-          style={{
-            background: `linear-gradient(90deg, transparent 0%, ${highlightColor} 50%, transparent 100%)`,
-            transform: "skewX(-20deg)",
-          }}
-        />
-      )}
-    </motion.div>
-  );
-}
 
 function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
   const heroTextOpacity = usePortfolioStore((state) => state.heroTextOpacity);

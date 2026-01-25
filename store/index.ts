@@ -13,6 +13,11 @@ interface PortfolioState {
   isSceneReady: boolean
   cardsVisible: boolean
   heroTextOpacity: number
+  
+  // Lens state
+  lensTarget: { x: number; y: number }
+  lensActive: boolean
+  lensZoom: number
 
   // Actions
   setDepth: (depth: number) => void
@@ -20,6 +25,9 @@ interface PortfolioState {
   setNormalizedScroll: (value: number) => void
   toggleNav: () => void
   setSceneReady: (ready: boolean) => void
+  setLensTarget: (target: { x: number; y: number }) => void
+  setLensActive: (active: boolean) => void
+  setLensZoom: (zoom: number) => void
 }
 
 export const usePortfolioStore = create<PortfolioState>((set, get) => ({
@@ -35,6 +43,11 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
   isSceneReady: false,
   cardsVisible: true,
   heroTextOpacity: 1,
+
+  // Initial Lens state
+  lensTarget: { x: 0.5, y: 0.5 },
+  lensActive: false,
+  lensZoom: 0,
 
   // Actions
   setDepth: (depth) => set({ depth }),
@@ -74,4 +87,8 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
   toggleNav: () => set((state) => ({ isNavExpanded: !state.isNavExpanded })),
 
   setSceneReady: (ready) => set({ isSceneReady: ready }),
+
+  setLensTarget: (target) => set({ lensTarget: target }),
+  setLensActive: (active) => set({ lensActive: active }),
+  setLensZoom: (zoom) => set({ lensZoom: zoom }),
 }))

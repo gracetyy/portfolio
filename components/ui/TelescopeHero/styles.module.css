@@ -8,60 +8,39 @@
   --progress: 0;
 }
 
-.section__media {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  transform: scale(var(--progress));
-}
-
-.section__media__front,
-.section__media__back {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.section__media__front {
-  filter: blur(2px);
-}
-
-.section__media__front img {
-  /* Ideally use a mask here, simplified for now */
-  /* mask-image: url(./mask.png); */
-  /* mask-position: 50% 50%; */
-  /* mask-size: cover; */
-}
-
-.front-1 { transform: scale(1); }
-.front-2 { transform: scale(0.85); }
-.front-3 { transform: scale(0.6); }
-.front-4 { transform: scale(0.45); }
-.front-5 { transform: scale(0.3); }
-.front-6 { transform: scale(0.15); }
-
-.section__media img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
 .section h1 {
   font-family: var(--font-museo);
   font-size: 8vw;
   font-weight: 700;
   display: flex;
   position: relative;
-  z-index: 10;
-  color: black; /* Changed from white to black */
+  z-index: 20;
+  color: transparent;
   line-height: 1;
+}
+
+:global(.dark) .section h1 {
+}
+
+.gradientText {
+  /* Continuous gradient logic: shifting background position based on char index */
+  --bg-pos: 0;
+  background: linear-gradient(to right, #EC6F66, #F3A183); 
+  background-size: 70vw 100%; /* Approx width of title */
+  background-position: calc(var(--char-index) * -6vw) top; /* Shift gradient left for each char */
+  background-attachment: scroll; /* Move with text */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-repeat: no-repeat;
+}
+
+:global(.dark) .gradientText {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: white;
+  color: white;
 }
 
 .section h1 span {
@@ -69,11 +48,35 @@
 }
 
 .left {
-  transform: translate3d(calc(var(--progress) * (-66vw + 100%) - 0.5vw), 0, 0);
+  transform: translate3d(calc(var(--progress) * -120vw - 2vw), -1.5vw, 0);
+}
+
+.lens {
+  display: inline-block;
+  width: 12vw;
+  height: 12vw;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  backdrop-filter: brightness(1.1) blur(2px) contrast(1.1);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  margin: 0 2vw;
+  transform-origin: center center;
+  z-index: 5;
+  position: relative;
+  /* subtle float animation */
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .right {
-  transform: translate3d(calc(var(--progress) * (66vw - 100%)), 0, 0);
+  transform: translate3d(calc(var(--progress) * 120vw + 1.5vw), 1.5vw, 0);
 }
 
 @media (max-width: 768px) {
@@ -81,10 +84,14 @@
     font-size: 9vw;
   }
   .left {
-    transform: translate3d(calc(var(--progress) * (-100vw + 100%) - 0.5vw), 0, 0);
+    transform: translate3d(calc(var(--progress) * -150vw - 2vw), -1.5vw, 0);
+  }
+  .lens {
+    width: 25vw;
+    height: 25vw;
   }
   .right {
-    transform: translate3d(calc(var(--progress) * (100vw - 100%)), 0, 0);
+    transform: translate3d(calc(var(--progress) * 150vw + 1.5vw), 1.5vw, 0);
   }
 }
 

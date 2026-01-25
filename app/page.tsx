@@ -69,7 +69,7 @@ function ProjectsSection() {
       {projects.map((project, index) => (
         <motion.div
           key={project.title}
-          className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-colors"
+          className="bg-card-background backdrop-blur-sm rounded-2xl p-6 border border-foreground/10 hover:border-foreground/20 transition-colors shadow-sm dark:shadow-none"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.6 }}
@@ -77,13 +77,17 @@ function ProjectsSection() {
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
         >
           <div className="w-full h-40 bg-gradient-to-br from-electric-blue/20 to-transparent rounded-lg mb-4" />
-          <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-          <p className="text-white/60 text-sm mb-4">{project.description}</p>
+          <h3 className="text-xl font-semibold mb-2 text-foreground">
+            {project.title}
+          </h3>
+          <p className="text-foreground/60 text-sm mb-4">
+            {project.description}
+          </p>
           <div className="flex flex-wrap gap-2">
             {project.tech.map((tech) => (
               <span
                 key={tech}
-                className="text-xs px-2 py-1 bg-white/10 rounded-full"
+                className="text-xs px-2 py-1 bg-foreground/5 text-foreground/80 rounded-full"
               >
                 {tech}
               </span>
@@ -105,12 +109,12 @@ function AboutSection() {
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <p className="text-lg text-white/70 leading-relaxed mb-6">
+      <p className="text-lg text-foreground/70 leading-relaxed mb-6">
         I&apos;m a passionate developer currently pursuing my Computer Science
         degree at the University of Hong Kong. I love building things that make
         a difference and solving complex problems with elegant solutions.
       </p>
-      <p className="text-lg text-white/70 leading-relaxed">
+      <p className="text-lg text-foreground/70 leading-relaxed">
         When I&apos;m not coding, you&apos;ll find me exploring new
         technologies, contributing to open source, or working on creative side
         projects.
@@ -129,13 +133,15 @@ function ContactSection() {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="text-white/60 mb-8">Let&apos;s build something together</p>
+      <p className="text-foreground/60 mb-8">
+        Let&apos;s build something together
+      </p>
       <div className="flex gap-6">
         {links.map((link) => (
           <motion.a
             key={link.label}
             href={link.href}
-            className="text-lg font-medium text-white/80 hover:text-white transition-colors relative"
+            className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors relative"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -187,17 +193,17 @@ export default function Home() {
         <ManilaFolder />
 
         {/* Projects Section */}
-        <Section id="projects" title="Projects" className="bg-navy">
+        <Section id="projects" title="Projects">
           <ProjectsSection />
         </Section>
 
         {/* About Section */}
-        <Section id="about" title="About" className="bg-navy">
+        <Section id="about" title="About">
           <AboutSection />
         </Section>
 
         {/* Experience Section */}
-        <Section id="experience" title="Experience" className="bg-navy">
+        <Section id="experience" title="Experience">
           <motion.div
             className="max-w-2xl"
             initial={{ opacity: 0 }}
@@ -224,15 +230,17 @@ export default function Home() {
               ].map((exp, index) => (
                 <motion.div
                   key={exp.role}
-                  className="border-l-2 border-white/20 pl-6 py-2"
+                  className="border-l-2 border-foreground/20 pl-6 py-2"
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <h3 className="text-xl font-semibold">{exp.role}</h3>
-                  <p className="text-white/60">{exp.company}</p>
-                  <p className="text-sm text-white/40">{exp.period}</p>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {exp.role}
+                  </h3>
+                  <p className="text-foreground/60">{exp.company}</p>
+                  <p className="text-sm text-foreground/40">{exp.period}</p>
                 </motion.div>
               ))}
             </div>
@@ -240,19 +248,17 @@ export default function Home() {
         </Section>
 
         {/* Contact Section */}
-        <Section id="contact" title="Get in Touch" className="bg-navy">
+        <Section id="contact" title="Get in Touch">
           <ContactSection />
         </Section>
 
         {/* Footer */}
-        <footer className="py-8 text-center text-white/40 text-sm bg-navy">
+        <footer className="py-8 text-center text-foreground/40 text-sm">
           <p>
             &copy; {new Date().getFullYear()} Grace Yuen. All rights reserved.
           </p>
         </footer>
       </div>
-
-      {/* Hero section background now rendered via Lens refraction in Scene */}
     </main>
   );
 }

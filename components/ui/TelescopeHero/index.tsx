@@ -1,26 +1,49 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { MeshGradient as PaperMeshGradient } from "@paper-design/shaders-react";
+import { usePortfolioStore } from "@/store";
+import { AnimatedLetter } from "../AnimatedLetter";
+import { useMotionValue } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function TelescopeHero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const setLensTarget = usePortfolioStore((state) => state.setLensTarget);
+  const setLensActive = usePortfolioStore((state) => state.setLensActive);
+  const setLensZoom = usePortfolioStore((state) => state.setLensZoom);
+
+  const [isAnyHover, setIsAnyHover] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [mouseX, mouseY]);
+
+  // Since the hero is 100vh and pinned, we can safely assume center screen
+  // This avoids jumping or "above" positioning issues with getBoundingClientRect()
+  const setCenterTarget = useCallback(() => {
+    setLensTarget({ x: 0.5, y: 0.5 });
+  }, [setLensTarget]);
 
   useGSAP(
     () => {
-      setMounted(true);
       const smallImages = gsap.utils.toArray<HTMLElement>(
         `.${styles.section__images} img`,
-      );
-      const frontImages = gsap.utils.toArray<HTMLElement>(
-        `.${styles.section__media__front}`,
       );
 
       const timeline = gsap.timeline({
@@ -30,6 +53,16 @@ export function TelescopeHero() {
           end: "+=200%", // Pin for 200% of viewport height
           scrub: 1.5,
           pin: true,
+          onEnter: () => {
+            setCenterTarget();
+            setLensActive(true);
+          },
+          onEnterBack: () => {
+            setCenterTarget();
+            setLensActive(true);
+          },
+          onLeave: () => setLensActive(false),
+          onLeaveBack: () => setLensActive(false),
         },
       });
 
@@ -45,7 +78,9 @@ export function TelescopeHero() {
       });
 
       // Animate Main Visual (scale & text spread via CSS variable)
-      // We animate a proxy object or use onUpdate to set the CSS variable
+      // Also update lens zoom in store
+      const proxy = { progress: 0 };
+
       timeline.to(
         containerRef.current,
         {
@@ -55,9 +90,38 @@ export function TelescopeHero() {
         },
         "<", // Start at same time
       );
+
+      timeline.to(
+        proxy,
+        {
+          progress: 1,
+          duration: 1,
+          ease: "power1.inOut",
+          onUpdate: () => {
+            setLensZoom(proxy.progress);
+          },
+        },
+        "<",
+      );
+
+      setCenterTarget();
+      setLensActive(true);
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [setCenterTarget, setLensActive] },
   );
+
+  useEffect(() => {
+    setCenterTarget();
+    setLensActive(true);
+
+    const handleResize = () => setCenterTarget();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      setLensActive(false);
+    };
+  }, [setCenterTarget, setLensActive]);
 
   // Placeholder images
   const smallImageUrls = Array.from({ length: 10 }).map(
@@ -73,40 +137,40 @@ export function TelescopeHero() {
         ))}
       </div>
 
-      {/* Main Visual & Split Text */}
-      <div className={styles.section__media}>
-        <div className={styles.section__media__back}>
-          {/* Soft Iridescent Mesh Gradient Background */}
-          {mounted && (
-            <div className="w-full h-full relative">
-              <PaperMeshGradient
-                width="100%"
-                height="100%"
-                colors={[
-                  "#FFE4E1", // MistyRose (Very Light Pink)
-                  "#E3F2FD", // Very Light Blue
-                  "#F3E5F5", // Very Light Purple
-                  "#FAFAFA", // Off White
-                ]}
-                distortion={1}
-                swirl={0.6}
-                grainMixer={0.05}
-                speed={0.2}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Split Text */}
 
-      <h1>
+      <h1 ref={titleRef}>
         <span className={styles.left}>
-          <span className="museo-ss01">GRACE</span>
+          {"GRACE".split("").map((letter, i) => (
+            <AnimatedLetter
+              key={`grace-${i}`}
+              letter={letter}
+              index={i}
+              mouseX={mouseX}
+              mouseY={mouseY}
+              onHoverChange={(h) => setIsAnyHover(h)}
+              isHovered={isAnyHover}
+              useShader={false}
+              className={styles.gradientText}
+              style={{ "--char-index": i } as React.CSSProperties}
+            />
+          ))}
         </span>
         <span className={styles.right}>
-          <span className="museo-ss01">YUE</span>
-          <span className="museo-n-normal">N</span>
+          {"YUEN".split("").map((letter, i) => (
+            <AnimatedLetter
+              key={`yuen-${i}`}
+              letter={letter}
+              index={5 + i}
+              mouseX={mouseX}
+              mouseY={mouseY}
+              onHoverChange={(h) => setIsAnyHover(h)}
+              isHovered={isAnyHover}
+              useShader={false}
+              className={styles.gradientText}
+              style={{ "--char-index": i + 5 } as React.CSSProperties}
+            />
+          ))}
         </span>
       </h1>
     </div>
