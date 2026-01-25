@@ -77,28 +77,10 @@ export function PolaroidCard({
     const baseSpeed = 60; // Distance to travel
     const scrollZ = adjustedScroll * baseSpeed;
 
-    // Smart Drifting Logic
-    // Only move out when close to camera (Z > 2)
+    // Target position: cards stay at their initial X/Y but move forward on Z
+    const targetX = initialPosition.x;
+    const targetY = initialPosition.y;
     const currentZ = initialPosition.z + scrollZ;
-    let targetX = initialPosition.x;
-    let targetY = initialPosition.y;
-
-    // Drifting starts as we get closer to camera (approx Z=8)
-    // Start parting earlier so it feels natural
-    const driftThreshold = 2;
-
-    if (currentZ > driftThreshold) {
-      // Create a smooth curve (0 to 1) as we approach Z=7
-      const distanceToCamera = Math.max(0, currentZ - driftThreshold);
-      const driftProgress = Math.min(1, distanceToCamera / 5);
-      const easeDrift = driftProgress * driftProgress; // Quadratic ease-in for "acceleration" away
-
-      // Apply the user-defined offset direction
-      // Scaling factor: 0.05 to convert large inputs (100, 200) to scene units (5, 10)
-      const scale = 0.05;
-      targetX += moveOffset[0] * scale * easeDrift;
-      targetY += moveOffset[1] * scale * easeDrift;
-    }
 
     // Add floating motion
     const floatY =
