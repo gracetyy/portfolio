@@ -44,12 +44,27 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
 
   useEffect(() => {
     if (isLoaded && minTimeElapsed && phase === "loading") {
+      console.log("LoadingGlobe: Starting exit transition");
       setPhase("exiting");
       // Longer exit animation
-      const timer = setTimeout(() => setPhase("hidden"), 1800);
+      const timer = setTimeout(() => {
+        console.log("LoadingGlobe: Hidden");
+        setPhase("hidden");
+      }, 1800);
       return () => clearTimeout(timer);
     }
   }, [isLoaded, minTimeElapsed, phase]);
+
+  useEffect(() => {
+    console.log(
+      "LoadingGlobe phase:",
+      phase,
+      "isLoaded:",
+      isLoaded,
+      "minTimeElapsed:",
+      minTimeElapsed,
+    );
+  }, [phase, isLoaded, minTimeElapsed]);
 
   if (phase === "hidden") return null;
 
@@ -75,7 +90,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-50 bg-navy"
+      className="fixed inset-0 flex items-center justify-center z-50 bg-[#F5F5F5]"
       style={{
         opacity: phase === "exiting" ? 0 : 1,
         transition: phase === "exiting" ? "opacity 1s ease-out 0.8s" : "none",

@@ -102,21 +102,21 @@ const HEX_PATTERN = `url("data:image/svg+xml,%3Csvg width='24' height='24' viewB
 function AnimatedLetter({
   letter,
   index,
-  gradientClassName = "hero-gradient-default",
   mouseX,
   mouseY,
   highlightColor = "rgba(255,255,255,0.5)",
   onHoverChange,
+  isHovered: parentHovered,
 }: {
   letter: string;
   index: number;
-  gradientClassName?: string;
   mouseX: any;
   mouseY: any;
   highlightColor?: string;
   isGrace?: boolean;
   cardsVisible?: boolean;
   onHoverChange?: (hovering: boolean) => void;
+  isHovered?: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const letterRef = useRef<HTMLSpanElement>(null);
@@ -138,6 +138,10 @@ function AnimatedLetter({
   });
 
   const weight = useTransform(distance, [0, 200], [900, 400]);
+  // Shader gradient colors - vibrant on hover, subtle default
+  const shaderColors = parentHovered
+    ? ["#FF0080", "#7928CA", "#00DFD8", "#FF4D4D"]
+    : ["#E8B4D8", "#B794F4", "#93C5FD", "#FFFFFF"];
 
   return (
     <motion.div
@@ -151,16 +155,50 @@ function AnimatedLetter({
         onHoverChange?.(false);
       }}
     >
-      {/* Text layer with gradient fill */}
+      {/* Shader gradient layer - masked by the text shape */}
+      {letter !== " " && (
+        <div
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{
+            WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(
+              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
+                letter.toUpperCase() === "N" ? 0 : 1
+              }">${letter}</text></svg>`,
+            )}")`,
+            WebkitMaskSize: "100% 100%",
+            WebkitMaskRepeat: "no-repeat",
+            maskImage: `url("data:image/svg+xml,${encodeURIComponent(
+              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
+                letter.toUpperCase() === "N" ? 0 : 1
+              }">${letter}</text></svg>`,
+            )}")`,
+            maskSize: "100% 100%",
+            maskRepeat: "no-repeat",
+          }}
+        >
+          <PaperMeshGradient
+            width="100%"
+            height="100%"
+            colors={shaderColors}
+            distortion={parentHovered ? 1.5 : 1}
+            swirl={parentHovered ? 0.8 : 0.6}
+            grainMixer={0.02}
+            speed={parentHovered ? 0.5 : 0.3}
+          />
+        </div>
+      )}
+      {/* Text layer - transparent to show shader through */}
       <motion.span
         ref={letterRef}
         variants={letterVariants}
         custom={index}
-        className={`inline-block relative z-10 ${
+        className={`inline-block relative z-0 ${
           letter.toUpperCase() === "N" ? "museo-n-normal" : "museo-ss01"
-        } ${gradientClassName}`}
+        }`}
         style={{
           display: letter === " " ? "inline" : "inline-block",
+          color: "transparent",
+          WebkitTextStroke: "0px transparent",
           ["--wght" as any]: weight,
           ["fontFeatureSettings" as any]:
             letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
@@ -176,7 +214,7 @@ function AnimatedLetter({
         <motion.div
           variants={sweepVariants}
           custom={index}
-          className="absolute inset-0 z-20 pointer-events-none mix-blend-screen" 
+          className="absolute inset-0 z-20 pointer-events-none mix-blend-screen"
           style={{
             background: `linear-gradient(90deg, transparent 0%, ${highlightColor} 50%, transparent 100%)`,
             transform: "skewX(-20deg)",
@@ -190,6 +228,7 @@ function AnimatedLetter({
 function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
   const heroTextOpacity = usePortfolioStore((state) => state.heroTextOpacity);
   const isSceneReady = usePortfolioStore((state) => state.isSceneReady);
+  const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
   const graceName = "GRACE";
   const yuenName = "YUEN";
@@ -212,10 +251,6 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [mouseX, mouseY]);
-
-  // Use CSS class names instead of inline styles to avoid React style conflicts
-  const getGradientClassName = (isHover: boolean) =>
-    isHover ? 'hero-gradient-hover' : 'hero-gradient-default';
 
   const cardsVisible = usePortfolioStore((state) => state.cardsVisible);
 
@@ -242,7 +277,11 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
             >
               <motion.div
                 className="flex justify-center flex-wrap text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight museo-ss01"
-                style={{ fontFamily: 'var(--font-museo)' }}
+                style={{
+                  fontFamily: "var(--font-museo)",
+                  fontFeatureSettings: "'ss01' 1",
+                  WebkitFontFeatureSettings: "'ss01' 1",
+                }}
               >
                 {graceName.split("").map((letter, i) => (
                   <AnimatedLetter
@@ -252,17 +291,21 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     isGrace={true}
                     cardsVisible={cardsVisible}
                     highlightColor="rgba(255, 255, 255, 0.4)"
-                    gradientClassName={getGradientClassName(isAnyHover)}
                     mouseX={mouseX}
                     mouseY={mouseY}
                     onHoverChange={(h) => setIsAnyHover(h)}
+                    isHovered={isAnyHover}
                   />
                 ))}
               </motion.div>
 
               <motion.div
                 className="flex justify-center flex-wrap text-[15vw] md:text-[13vw] lg:text-[11vw] font-bold leading-none tracking-tight museo-ss01"
-                style={{ fontFamily: 'var(--font-museo)' }}
+                style={{
+                  fontFamily: "var(--font-museo)",
+                  fontFeatureSettings: "'ss01' 1",
+                  WebkitFontFeatureSettings: "'ss01' 1",
+                }}
               >
                 {yuenName.split("").map((letter, i) => (
                   <AnimatedLetter
@@ -272,10 +315,10 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
                     isGrace={false}
                     cardsVisible={cardsVisible}
                     highlightColor="rgba(0, 255, 255, 0.4)"
-                    gradientClassName={getGradientClassName(isAnyHover)}
                     mouseX={mouseX}
                     mouseY={mouseY}
                     onHoverChange={(h) => setIsAnyHover(h)}
+                    isHovered={isAnyHover}
                   />
                 ))}
               </motion.div>

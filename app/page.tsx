@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { HeroOverlay, Navigation, ManilaFolder } from "@/components/ui";
+import { Navigation, ManilaFolder, TelescopeHero } from "@/components/ui";
+import { MeshGradient } from "@/components/canvas";
 import { useScrollPhysics } from "@/hooks";
 import { usePortfolioStore } from "@/store";
 
@@ -168,17 +169,19 @@ export default function Home() {
 
   return (
     <main className="relative">
+      {/* Pastel mesh gradient base layer (matches previous hero background) */}
+      <MeshGradient />
+
       {/* 3D Scene (Fixed background) */}
       <Scene />
 
       {/* UI Overlays */}
       <Navigation />
-      <HeroOverlay />
 
       {/* Scroll Container */}
       <div className="scroll-container">
-        {/* Hero Scroll Space - adjusted to 800vh so content arrives right after cards exit */}
-        <div className="h-[800vh]" />
+        {/* Telescope Zoom Hero */}
+        <TelescopeHero />
 
         {/* Manila Folder / About Section */}
         <ManilaFolder />
@@ -249,13 +252,7 @@ export default function Home() {
         </footer>
       </div>
 
-      {/* Background transition overlay */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none z-5"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, transparent ${Math.max(0, 100 - normalizedScroll * 150)}%, rgba(26, 26, 26, ${normalizedScroll * 0.8}) 100%)`,
-        }}
-      />
+      {/* Hero section background now rendered via Lens refraction in Scene */}
     </main>
   );
 }

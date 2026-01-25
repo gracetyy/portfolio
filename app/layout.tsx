@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { inter, museoModerno } from "./fonts";
 import "./globals.css";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "Grace Yuen | Portfolio",
@@ -45,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${museoModerno.variable}`}>
       <body className={`${inter.className} bg-navy antialiased`}>
+        <SmoothScroll />
         {children}
       </body>
     </html>

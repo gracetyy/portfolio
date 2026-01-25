@@ -9,17 +9,17 @@ export function MeshGradient() {
   return (
     // eslint-disable-next-line
     <div
-      className="absolute inset-0 -z-10 h-full w-full transition-opacity duration-300 ease-out"
-      style={{ opacity: heroTextOpacity, backgroundColor: "#050511" }}
+      className="fixed inset-0 z-0 h-full w-full pointer-events-none transition-opacity duration-300 ease-out"
+      style={{ opacity: heroTextOpacity, backgroundColor: "#F5F5F5" }}
     >
       <PaperMeshGradient
         width="100%"
         height="100%"
         colors={[
-          "#050511", // Deep background
-          "#1a1a1a", // Lowered soft dark grey
-          "#333333", // Lowered highlight
-          "#0d0d0d", // Lowered shadow
+          "#FFE4E1", // MistyRose (Very Light Pink)
+          "#E3F2FD", // Very Light Blue
+          "#F3E5F5", // Very Light Purple
+          "#FAFAFA", // Off White
         ]}
         distortion={1}
         swirl={0.6}
