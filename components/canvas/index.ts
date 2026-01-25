@@ -1,2 +1,5 @@
 export { Scene } from './Scene'
 export { PolaroidCard } from './Card'
+export { MeshGradient } from './MeshGradient'
+export { Lens } from './Lens'
+export { WebGLBackground } from './WebGLBackground'
