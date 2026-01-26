@@ -17,11 +17,8 @@ const config: Config = {
           deep: '#030308',
           light: '#0a0a1a',
         },
-        electric: {
-          blue: '#0000FF',
-          cyan: '#00FFFF',
-          yellow: '#FFFF00',
-        },
+        primary: 'var(--primary)',
+        highlight: 'var(--highlight)',
         void: {
           DEFAULT: '#000000',
           soft: '#0c0c14',

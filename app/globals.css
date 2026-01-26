@@ -7,8 +7,8 @@
   --foreground: #1A1A1A;
   
   --navy: #222222;
-  --electric-blue: #0000FF;
-  --electric-yellow: #FFFF00;
+  --primary: #4f46e5; /* Indigo-600 */
+  --highlight: #fde047; /* Yellow-300 */
   --card-white: #FAFAFA;
   --card-background: #ffffff;
 
@@ -24,8 +24,8 @@
   --foreground: #F5F5F5;
   
   --navy: #050511;
-  --electric-blue: #4d4dff; /* Slightly lighter for visibility on dark */
-  --electric-yellow: #ffff4d;
+  --primary: #818cf8; /* Indigo-400 */
+  --highlight: #fef08a; /* Yellow-200 */
   --card-white: #1a1a1a;
   --card-background: #0a0a0a;
 }
@@ -35,16 +35,30 @@
 }
 
 html {
-  scroll-behavior: auto; /* Disable smooth scroll for better Three.js integration */
+  height: 100%;
+  width: 100%;
+  scroll-behavior: auto;
+  overscroll-behavior-y: none;
 }
 
-html,
 body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
   max-width: 100vw;
   overflow-x: hidden;
+  position: relative;
   background: var(--background);
   color: var(--foreground);
   transition: background-color 0.3s ease, color 0.3s ease;
+  overscroll-behavior-y: none;
+}
+
+main {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
 }
 
 body {
@@ -52,32 +66,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
 }
 
-/* Selection color */
 ::selection {
-  background: var(--electric-blue);
-  color: var(--electric-yellow);
+  background: var(--primary);
+  color: var(--highlight);
 }
 
-/* Hero text with blend mode */
 .hero-text {
-  /* removed mix-blend-mode to prevent unintended blending with scene */
   pointer-events: none;
 }
 
-/* Museo Moderno stylistic set helpers */
 .museo-ss01 {
   font-family: var(--font-museo) !important;
   font-feature-settings: "ss01" 1 !important;
   -webkit-font-feature-settings: "ss01" 1 !important;
 }
 
-/* Disable ss01 for a specific glyph (use on the N) */
 .museo-n-normal {
   font-feature-settings: "ss01" 0 !important;
   -webkit-font-feature-settings: "ss01" 0 !important;
@@ -88,10 +96,9 @@ body {
 }
 
 .hero-text-blue {
-  color: var(--electric-blue);
+  color: var(--primary);
 }
 
-/* Depth meter styling */
 .depth-meter {
   width: 2px;
   background: linear-gradient(
@@ -109,14 +116,12 @@ body {
     0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-/* Status text styling */
 .status-text {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-/* Animated gradient pulse for text hover */
 @keyframes meshPulse {
   0%, 100% {
     background-size: 100% 100%;
@@ -128,7 +133,6 @@ body {
   }
 }
 
-/* Hamburger menu lines */
 .hamburger-line {
   width: 24px;
   height: 2px;
@@ -136,9 +140,7 @@ body {
   transition: all 0.3s var(--ease-out-expo);
 }
 
-/* Navigation bar expanded */
 .nav-expanded {
-  /* Default (Light Mode) */
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.9) 0%,
@@ -158,21 +160,15 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Card sheen effect */
 @keyframes sheen {
-  0% {
-    transform: translateX(-100%) rotate(15deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(15deg);
-  }
+  0% { transform: translateX(-100%) rotate(15deg); }
+  100% { transform: translateX(100%) rotate(15deg); }
 }
 
 .card-sheen {
   animation: sheen 3s ease-in-out infinite;
 }
 
-/* Glow effect for interactive elements */
 .glow-on-hover {
   transition: text-shadow 0.3s ease;
 }
@@ -183,7 +179,6 @@ body {
     0 0 40px rgba(0, 0, 255, 0.3);
 }
 
-/* Canvas container */
 .canvas-container {
   position: fixed;
   top: 0;
@@ -193,25 +188,16 @@ body {
   z-index: 0;
 }
 
-/* Scroll container */
 .scroll-container {
   position: relative;
-  /**
-   * IMPORTANT: Removed z-index: 1 to allow mix-blend-mode in descendant elements
-   * (like TelescopeHero text) to blend with fixed background elements (MeshGradient)
-   * that are siblings to scroll-container in the main flow.
-   */
-  /* z-index: 1; */ 
 }
 
-/* Section transitions */
 .section-transition {
   transition:
     background-color 0.8s var(--ease-in-out-expo),
     opacity 0.6s var(--ease-out-expo);
 }
 
-/* Loading state */
 .loading-shimmer {
   background: linear-gradient(
     90deg,
@@ -224,15 +210,10 @@ body {
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-/* Ripple effect for background transitions */
 .ripple-bg {
   position: relative;
   overflow: hidden;
@@ -256,18 +237,15 @@ body {
   height: 300vmax;
 }
 
-/* Three.js canvas styling */
 canvas {
   touch-action: none;
 }
 
-/* Prevent text selection during scroll */
 .no-select {
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* Font weight transition for variable fonts */
 .variable-weight {
   font-variation-settings: 'wght' 400;
   transition: font-variation-settings 0.3s ease;
@@ -277,14 +255,12 @@ canvas {
   font-variation-settings: 'wght' 700;
 }
 
-/* Mesh Gradient Text Animation */
 @keyframes mesh-pulse {
   0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
   50% { background-position: 100% 50%; filter: hue-rotate(10deg); }
   100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
 }
 
-/* Gradient flow animation for hero text */
 @keyframes gradientFlow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -296,34 +272,20 @@ canvas {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* Default mesh (will be overridden by inline styles) */
   background-image: linear-gradient(to right, #fff, #aaa);
   transition: background-image 0.5s ease;
   animation: mesh-pulse 8s ease-in-out infinite;
 }
 
-/* Mesh-like gradient keyframes for organic shader-like movement */
 @keyframes meshGradientFlow {
-  0% {
-    background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%;
-  }
-  25% {
-    background-position: 100% 0%, 0% 100%, 100% 50%, 50% 0%;
-  }
-  50% {
-    background-position: 100% 100%, 0% 0%, 50% 100%, 100% 50%;
-  }
-  75% {
-    background-position: 0% 100%, 100% 0%, 0% 50%, 50% 100%;
-  }
-  100% {
-    background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%;
-  }
+  0% { background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%; }
+  25% { background-position: 100% 0%, 0% 100%, 100% 50%, 50% 0%; }
+  50% { background-position: 100% 100%, 0% 0%, 50% 100%, 100% 50%; }
+  75% { background-position: 0% 100%, 100% 0%, 0% 50%, 50% 100%; }
+  100% { background-position: 0% 0%, 100% 100%, 50% 0%, 0% 50%; }
 }
 
-/* Hero text gradient classes - using classes to avoid React style conflicts */
 .hero-gradient-default {
-  /* Mesh-like gradient using multiple radial gradients for organic shader look */
   background:
     radial-gradient(ellipse 120% 80% at 20% 30%, rgba(232, 180, 216, 0.9) 0%, transparent 50%),
     radial-gradient(ellipse 100% 100% at 80% 70%, rgba(183, 148, 244, 0.85) 0%, transparent 45%),
@@ -345,4 +307,153 @@ canvas {
   color: transparent;
   -webkit-text-fill-color: transparent;
   animation: gradientFlow 2s ease-in-out infinite;
+}
+
+/* Houdini Properties for Hero Gradient */
+@property --s-start-0 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 9%;
+}
+@property --s-end-0 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 55%;
+}
+@property --x-0 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 85%;
+}
+@property --y-0 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 80%;
+}
+@property --c-0 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: hsla(267, 52%, 83%, 1);
+}
+@property --c-1 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: hsla(336, 100%, 82%, 1);
+}
+@property --s-start-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 5%;
+}
+@property --s-end-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 72%;
+}
+@property --y-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 24%;
+}
+@property --x-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 60%;
+}
+@property --c-2 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: hsla(54, 100%, 65%, 0.49);
+}
+@property --x-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 13%;
+}
+@property --s-start-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 5%;
+}
+@property --s-end-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 52%;
+}
+@property --y-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 82%;
+}
+@property --x-3 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 24%;
+}
+@property --c-3 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: hsla(299, 72%, 68%, 1);
+}
+@property --s-start-3 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 13%;
+}
+@property --s-end-3 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 68%;
+}
+@property --y-3 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 7%;
+}
+
+@keyframes ani-hero-gradient {
+  0% {
+    --s-start-0: 9%;
+    --s-end-0: 55%;
+    --x-0: 85%;
+    --y-0: 80%;
+    --c-0: hsla(267, 52%, 83%, 1);
+    --c-1: hsla(336, 100%, 82%, 1);
+    --s-start-1: 5%;
+    --s-end-1: 72%;
+    --y-1: 24%;
+    --x-1: 60%;
+    --c-2: hsla(54, 100%, 65%, 0.49);
+    --x-2: 13%;
+    --s-start-2: 5%;
+    --s-end-2: 52%;
+    --y-2: 82%;
+    --x-3: 24%;
+    --c-3: hsla(299, 72%, 68%, 1);
+    --s-start-3: 13%;
+    --s-end-3: 68%;
+    --y-3: 7%;
+  }
+  100% {
+    --s-start-0: 9%;
+    --s-end-0: 55%;
+    --x-0: 31%;
+    --y-0: 94%;
+    --c-0: hsla(267, 52%, 83%, 1);
+    --c-1: hsla(337, 82%, 95%, 1);
+    --s-start-1: 5%;
+    --s-end-1: 72%;
+    --y-1: 25%;
+    --x-1: 2%;
+    --c-2: hsla(54, 100%, 65%, 0.49);
+    --x-2: 98%;
+    --s-start-2: 5%;
+    --s-end-2: 52%;
+    --y-2: 20%;
+    --x-3: 95%;
+    --c-3: hsla(299, 72%, 68%, 1);
+    --s-start-3: 13%;
+    --s-end-3: 68%;
+    --y-3: 92%;
+  }
 }
