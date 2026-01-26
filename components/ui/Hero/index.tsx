@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import styles from "./styles.module.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,7 +12,7 @@ import { useMotionValue } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function TelescopeHero() {
+export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const setLensTarget = usePortfolioStore((state) => state.setLensTarget);
@@ -22,24 +23,55 @@ export function TelescopeHero() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [mouseX, mouseY]);
-
   // Since the hero is 100vh and pinned, we can safely assume center screen
   // This avoids jumping or "above" positioning issues with getBoundingClientRect()
   const setCenterTarget = useCallback(() => {
     setLensTarget({ x: 0.5, y: 0.5 });
   }, [setLensTarget]);
 
+  // Mouse movement handler for Parallax
+  useGSAP(
+    () => {
+      const smallImages = gsap.utils.toArray<HTMLElement>(
+        `.${styles.section__images} img`,
+      );
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Calculate normalized mouse position (-1 to 1)
+        const xNorm = (clientX / width) * 2 - 1;
+        const yNorm = (clientY / height) * 2 - 1;
+
+        smallImages.forEach((img, i) => {
+          // Create different depths based on index
+          const depth = 1 + (i % 3) * 0.5; // Factors: 1, 1.5, 2
+          const moveX = xNorm * 30 * depth; // Max movement 30px * depth
+          const moveY = yNorm * 30 * depth;
+
+          gsap.to(img, {
+            x: moveX,
+            y: moveY,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto", // Ensure we don't conflict with other tweens overly much
+          });
+        });
+
+        // Update motion values for text shader
+        mouseX.set(clientX);
+        mouseY.set(clientY);
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => window.removeEventListener("mousemove", handleMouseMove);
+    },
+    { scope: containerRef },
+  );
+
+  // Scroll Trigger Animation
   useGSAP(
     () => {
       const smallImages = gsap.utils.toArray<HTMLElement>(
@@ -50,7 +82,7 @@ export function TelescopeHero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=200%", // Pin for 200% of viewport height
+          end: "+=80%",
           scrub: 1.5,
           pin: true,
           onEnter: () => {
@@ -133,13 +165,20 @@ export function TelescopeHero() {
       {/* Floating Image Grid */}
       <div className={styles.section__images}>
         {smallImageUrls.map((src, i) => (
-          <img key={i} src={src} alt={`Float ${i}`} />
+          <Image
+            key={i}
+            src={src}
+            alt={`Float ${i}`}
+            width={400}
+            height={500}
+            unoptimized
+          />
         ))}
       </div>
 
       {/* Split Text */}
 
-      <h1 ref={titleRef}>
+      <h1 ref={titleRef} className={styles.heroTitle}>
         <span className={styles.left}>
           {"GRACE".split("").map((letter, i) => (
             <AnimatedLetter
@@ -151,7 +190,7 @@ export function TelescopeHero() {
               onHoverChange={(h) => setIsAnyHover(h)}
               isHovered={isAnyHover}
               useShader={false}
-              className={styles.gradientText}
+              className={styles.plainText} // Removed gradientText here
               style={{ "--char-index": i } as React.CSSProperties}
             />
           ))}
@@ -167,7 +206,7 @@ export function TelescopeHero() {
               onHoverChange={(h) => setIsAnyHover(h)}
               isHovered={isAnyHover}
               useShader={false}
-              className={styles.gradientText}
+              className={styles.plainText} // Removed gradientText here
               style={{ "--char-index": i + 5 } as React.CSSProperties}
             />
           ))}

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { Navigation, ManilaFolder, TelescopeHero } from "@/components/ui";
+import { Navigation, GlassCardProfile, Hero } from "@/components/ui";
 import { MeshGradient } from "@/components/canvas";
 import { useScrollPhysics } from "@/hooks";
 import { usePortfolioStore } from "@/store";
@@ -76,7 +76,7 @@ function ProjectsSection() {
           viewport={{ once: true }}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
         >
-          <div className="w-full h-40 bg-gradient-to-br from-electric-blue/20 to-transparent rounded-lg mb-4" />
+          <div className="w-full h-40 bg-gradient-to-br from-primary/20 to-transparent rounded-lg mb-4" />
           <h3 className="text-xl font-semibold mb-2 text-foreground">
             {project.title}
           </h3>
@@ -147,7 +147,7 @@ function ContactSection() {
           >
             {link.label}
             <motion.span
-              className="absolute -bottom-1 left-0 right-0 h-px bg-electric-blue"
+              className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
               initial={{ scaleX: 0 }}
               whileHover={{ scaleX: 1 }}
               transition={{ duration: 0.3 }}
@@ -165,11 +165,13 @@ export default function Home() {
 
   const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
-  // Prevent scroll during initial load
+  // Ensure proper overflow handling
   useEffect(() => {
-    document.body.style.overflow = "auto";
+    document.body.style.overflowY = "auto";
+    document.body.style.overflowX = "hidden";
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflowY = "auto";
+      document.body.style.overflowX = "hidden";
     };
   }, []);
 
@@ -187,10 +189,10 @@ export default function Home() {
       {/* Scroll Container */}
       <div className="scroll-container">
         {/* Telescope Zoom Hero */}
-        <TelescopeHero />
+        <Hero />
 
-        {/* Manila Folder / About Section */}
-        <ManilaFolder />
+        {/* Glass Profile Card */}
+        <GlassCardProfile />
 
         {/* Projects Section */}
         <Section id="projects" title="Projects">

@@ -1,5 +1,5 @@
 export { HeroOverlay } from './HeroOverlay'
 export { Navigation } from './Navigation'
 export { LoadingGlobe } from './LoadingGlobe'
-export { ManilaFolder } from './ManilaFolder'
-export { TelescopeHero } from './TelescopeHero'
+export { GlassCardProfile } from './GlassCardProfile'
+export { Hero } from './Hero'
