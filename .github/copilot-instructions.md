@@ -10,7 +10,7 @@ Purpose: short, actionable guidance so an AI coding agent becomes productive qui
 ## Key files
 - App entry & routes: `app/` (App Router). Primary page: `app/page.tsx` (client component, imports `Scene` dynamically: `ssr: false`).
 - 3D Scene: `components/canvas/Scene.tsx`, `components/canvas/Card.tsx`, `components/canvas/index.ts`.
-- UI components: `components/ui/*` (Hero, Navigation, LoadingGlobe, ManilaFolder). Use these for layout & non-3D UI changes.
+- UI components: `components/ui/*` (Hero, Navigation, LoadingGlobe, GlassCardProfile). Use these for layout & non-3D UI changes.
 - State store: `store/index.ts` — single zustand store (`usePortfolioStore`) for scroll, UI and scene flags.
 - Hooks & utils: `hooks/useScrollPhysics.ts`, `lib/utils.ts` (e.g., `seededRandom`).
 - Build/deploy: `next.config.ts`, `package.json` scripts, `.github/workflows/pages.yml`, `public/CNAME`.
