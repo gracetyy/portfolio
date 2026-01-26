@@ -3,14 +3,22 @@
 import { MeshGradient as PaperMeshGradient } from "@paper-design/shaders-react";
 import { usePortfolioStore } from "@/store";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function MeshGradient() {
   const { theme } = useTheme();
   const heroTextOpacity = usePortfolioStore((state) => state.heroTextOpacity);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const isDark = theme === "dark";
 
   return (
-    // eslint-disable-next-line
     <div
       className="fixed inset-0 h-full w-full pointer-events-none transition-opacity duration-300 ease-out"
       style={{
