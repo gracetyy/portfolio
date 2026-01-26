@@ -186,13 +186,7 @@ export function GlassCardProfile() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-100/30 dark:bg-indigo-900/10 rounded-full blur-[80px]" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 40, scale: 0.95 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: true }}
-        className="w-full max-w-6xl relative z-10"
-      >
+      <div className="w-full max-w-6xl relative z-10">
         {/* Glass Card - More transparency, Frostier */}
         <div
           className="relative rounded-3xl overflow-hidden 
@@ -217,7 +211,7 @@ export function GlassCardProfile() {
             <ProfileContent />
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
