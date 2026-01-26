@@ -188,11 +188,10 @@ export default function Home() {
 
       {/* Scroll Container */}
       <div className="scroll-container">
-        {/* Telescope Zoom Hero */}
-        <Hero />
-
-        {/* Glass Profile Card */}
-        <GlassCardProfile />
+        {/* Telescope Zoom Hero with Next Section Inside */}
+        <Hero>
+          <GlassCardProfile />
+        </Hero>
 
         {/* Projects Section */}
         <Section id="projects" title="Projects">

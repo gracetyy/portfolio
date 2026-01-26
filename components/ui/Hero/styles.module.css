@@ -203,3 +203,27 @@
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
   animation: none;
 }
+
+.zoomContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  width: 100vw;
+  height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* Behind .heroTitle (z-20) but front of images/content? */
+  /* Actually Codrops often puts it BEHIND everything if there is a hole. */
+  /* But .heroTitle moves OUT of the way. */
+  /* If it's effectively the 'next page', it should be interactive at the end. */
+  opacity: 0;
+  transform: scale(0.5); /* Initial state handled by GSAP, but good for fallback */
+  pointer-events: none; /* Initially no interaction */
+}
+
+.zoomContainer.active {
+  pointer-events: auto;
+}

@@ -12,9 +12,10 @@ import { useMotionValue } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function Hero() {
+export function Hero({ children }: { children?: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const zoomContentRef = useRef<HTMLDivElement>(null);
   const setLensTarget = usePortfolioStore((state) => state.setLensTarget);
   const setLensActive = usePortfolioStore((state) => state.setLensActive);
   const setLensZoom = usePortfolioStore((state) => state.setLensZoom);
@@ -82,32 +83,55 @@ export function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=80%",
-          scrub: 1.5,
+          end: "+=250%", // Increased scroll distance for smoother control
+          scrub: 1, // Reduced scrub lag slightly for responsiveness
           pin: true,
-          onEnter: () => {
-            setCenterTarget();
-            setLensActive(true);
-          },
+          anticipatePin: 1, // Helps avoid pin jumps
           onEnterBack: () => {
             setCenterTarget();
             setLensActive(true);
           },
-          onLeave: () => setLensActive(false),
-          onLeaveBack: () => setLensActive(false),
+          onLeave: () => {
+            setLensActive(false);
+            if (zoomContentRef.current) {
+              zoomContentRef.current.classList.add(styles.active);
+            }
+          },
+          onLeaveBack: () => {
+            setLensActive(false);
+            if (zoomContentRef.current) {
+              zoomContentRef.current.classList.remove(styles.active);
+            }
+          },
         },
       });
 
       // Animate small images (Z-axis zoom)
       timeline.to(smallImages, {
         z: "100vh",
+        opacity: 0,
         duration: 1,
-        ease: "power1.inOut",
+        ease: "power2.in",
         stagger: {
-          amount: 0.2, // Randomize slightly
+          amount: 0.2,
           from: "center",
         },
       });
+
+      // Animate Zoom Content (Next Section)
+      if (zoomContentRef.current) {
+        timeline.fromTo(
+          zoomContentRef.current,
+          { scale: 0.1, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.5, // Faster acceleration at the end
+            ease: "power3.in",
+          },
+          "<+=0.6", // Start much later (was 0.2)
+        );
+      }
 
       // Animate Main Visual (scale & text spread via CSS variable)
       // Also update lens zoom in store
@@ -174,6 +198,11 @@ export function Hero() {
             unoptimized
           />
         ))}
+      </div>
+
+      {/* Zoom Content (Next Section) */}
+      <div ref={zoomContentRef} className={styles.zoomContainer}>
+        {children}
       </div>
 
       {/* Split Text */}
