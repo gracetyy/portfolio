@@ -11,14 +11,33 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
     "loading",
   );
   const [rotation, setRotation] = useState(0);
-  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   const animationRef = useRef<number | null>(null);
 
-  // Minimum display time of 0.6 seconds
+  // Helper to trigger the exit sequence
+  const triggerExit = () => {
+    if (phase !== "loading") return;
+    setPhase("exiting");
+    setTimeout(() => {
+      setPhase("hidden");
+    }, 1200); // Faster exit for snappy feel (previously 1.8s)
+  };
+
+  // 1. Dependence: Exit when isLoaded is true
   useEffect(() => {
-    const timer = setTimeout(() => setMinTimeElapsed(true), 600);
+    if (isLoaded && phase === "loading") {
+      triggerExit();
+    }
+  }, [isLoaded, phase]);
+
+  // 2. Maximum Bound: Force exit after current duration (0.6s) if not already loaded
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (phase === "loading") {
+        triggerExit();
+      }
+    }, 600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [phase]);
 
   // Animate rotation continuously
   useEffect(() => {
@@ -41,30 +60,6 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (isLoaded && minTimeElapsed && phase === "loading") {
-      console.log("LoadingGlobe: Starting exit transition");
-      setPhase("exiting");
-      // Longer exit animation
-      const timer = setTimeout(() => {
-        console.log("LoadingGlobe: Hidden");
-        setPhase("hidden");
-      }, 1800);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoaded, minTimeElapsed, phase]);
-
-  useEffect(() => {
-    console.log(
-      "LoadingGlobe phase:",
-      phase,
-      "isLoaded:",
-      isLoaded,
-      "minTimeElapsed:",
-      minTimeElapsed,
-    );
-  }, [phase, isLoaded, minTimeElapsed]);
 
   if (phase === "hidden") return null;
 
@@ -125,7 +120,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               cy="0"
               r="100"
               fill="none"
-              stroke="#ea5d00"
+              stroke="#726ec4"
               strokeWidth="1.5"
             />
 
@@ -138,7 +133,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
                 rx={line.radius}
                 ry={line.radius * 0.25}
                 fill="none"
-                stroke="#ea5d00"
+                stroke="#726ec4"
                 strokeWidth="1"
                 opacity="0.7"
               />
@@ -151,7 +146,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               rx="100"
               ry="25"
               fill="none"
-              stroke="#ea5d00"
+              stroke="#726ec4"
               strokeWidth="1.2"
               opacity="0.9"
             />
@@ -170,7 +165,7 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
                   rx={100 * scaleX}
                   ry="100"
                   fill="none"
-                  stroke="#ea5d00"
+                  stroke="#726ec4"
                   strokeWidth="1"
                   opacity={0.3 + scaleX * 0.5}
                 />
@@ -184,14 +179,14 @@ export function LoadingGlobe({ isLoaded }: LoadingGlobeProps) {
               rx={100 * getLongitudeScaleX(0)}
               ry="100"
               fill="none"
-              stroke="#ea5d00"
+              stroke="#726ec4"
               strokeWidth="1.2"
               opacity="0.9"
             />
 
             {/* Poles markers */}
-            <circle cx="0" cy="-100" r="3" fill="#ea5d00" opacity="0.8" />
-            <circle cx="0" cy="100" r="3" fill="#ea5d00" opacity="0.8" />
+            <circle cx="0" cy="-100" r="3" fill="#726ec4" opacity="0.8" />
+            <circle cx="0" cy="100" r="3" fill="#726ec4" opacity="0.8" />
           </g>
         </svg>
       </div>

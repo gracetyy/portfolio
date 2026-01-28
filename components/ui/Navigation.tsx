@@ -97,14 +97,14 @@ function HamburgerIcon({
   );
 }
 
-function NavItem({ label, href }: { label: string; href: string }) {
+const NavItem = ({ label, href }: { label: string; href: string }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.a
       href={href}
       variants={navItemVariants}
-      className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+      className="relative px-3 py-2 text-xs md:text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover={{ scale: 1.05 }}
@@ -112,7 +112,7 @@ function NavItem({ label, href }: { label: string; href: string }) {
     >
       {label}
       <motion.span
-        className="absolute bottom-1 left-4 right-4 h-px bg-foreground"
+        className="absolute bottom-1 left-3 right-3 h-px bg-primary"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: isHovered ? 1 : 0 }}
         transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
@@ -120,7 +120,7 @@ function NavItem({ label, href }: { label: string; href: string }) {
       />
     </motion.a>
   );
-}
+};
 
 export function Navigation() {
   const isNavExpanded = usePortfolioStore((state) => state.isNavExpanded);
@@ -138,7 +138,7 @@ export function Navigation() {
       transition={{ delay: 0.5, duration: 0.6 }}
     >
       <motion.div
-        className="flex items-center justify-end overflow-hidden nav-expanded shadow-lg"
+        className="flex items-center justify-end overflow-hidden nav-expanded"
         variants={navContainerVariants}
         animate={showExpanded ? "expanded" : "collapsed"}
         onMouseEnter={() => setIsHovered(true)}
