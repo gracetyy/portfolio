@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { Navigation, GlassCardProfile, Hero } from "@/components/ui";
+import {
+  Navigation,
+  GlassCardProfile,
+  Hero,
+  LoadingGlobe,
+  HeroOverlay,
+  ProjectShape,
+} from "@/components/ui";
 import { MeshGradient } from "@/components/canvas";
 import { useScrollPhysics } from "@/hooks";
 import { usePortfolioStore } from "@/store";
@@ -28,14 +35,15 @@ function Section({
   return (
     <section
       id={id}
-      className={`min-h-screen flex flex-col items-center justify-center px-8 ${className}`}
+      className={`min-h-screen flex flex-col items-center justify-start px-4 md:px-8 pt-20 md:pt-24 pb-20 md:pb-32 gap-8 ${className}`}
     >
       <motion.h2
-        className="text-4xl md:text-6xl font-bold mb-8"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-        viewport={{ once: true, margin: "-100px" }}
+        className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 md:mb-8"
+        // Remove vertical translation to prevent perceived jumping between sections
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+        viewport={{ once: true, amount: 0.4 }}
       >
         {title}
       </motion.h2>
@@ -69,7 +77,7 @@ function ProjectsSection() {
       {projects.map((project, index) => (
         <motion.div
           key={project.title}
-          className="bg-card-background backdrop-blur-sm rounded-2xl p-6 border border-foreground/10 hover:border-foreground/20 transition-colors shadow-sm dark:shadow-none"
+          className="liquid-glass rounded-2xl p-6 transition-all hover:scale-[1.02]"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.6 }}
@@ -163,6 +171,7 @@ export default function Home() {
   // Initialize scroll physics
   useScrollPhysics();
 
+  const isSceneReady = usePortfolioStore((state) => state.isSceneReady);
   const normalizedScroll = usePortfolioStore((state) => state.normalizedScroll);
 
   // Ensure proper overflow handling
@@ -177,6 +186,9 @@ export default function Home() {
 
   return (
     <main className="relative">
+      {/* Loading State */}
+      <LoadingGlobe isLoaded={isSceneReady} />
+
       {/* Pastel mesh gradient base layer (matches previous hero background) */}
       <MeshGradient />
 
@@ -185,6 +197,7 @@ export default function Home() {
 
       {/* UI Overlays */}
       <Navigation />
+      <HeroOverlay />
 
       {/* Scroll Container */}
       <div className="scroll-container">
@@ -194,13 +207,13 @@ export default function Home() {
         </Hero>
 
         {/* Projects Section */}
-        <Section id="projects" title="Projects">
+        <Section
+          id="projects"
+          title="Projects"
+          className="relative overflow-hidden"
+        >
+          <ProjectShape />
           <ProjectsSection />
-        </Section>
-
-        {/* About Section */}
-        <Section id="about" title="About">
-          <AboutSection />
         </Section>
 
         {/* Experience Section */}
