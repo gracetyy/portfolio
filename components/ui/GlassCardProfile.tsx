@@ -1,90 +1,70 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import {
   Code2,
-  Globe,
   Terminal,
-  Cpu,
   Download,
   ArrowRight,
   Palette,
+  Cloud,
 } from "lucide-react";
+import { AnimatedLetter } from "./AnimatedLetter";
+import styles from "./GlassCardText.module.css";
+import { useState, useEffect } from "react";
 
-// Reorganized content for the 3-column layout
+// Reorganized content to match screenshot specific cards
 const cards = [
   {
-    id: "frontend",
-    title: "Frontend & Design",
-    description:
-      "Crafting immersive user experiences with modern web technologies and 3D interactions.",
-    Icon: Palette,
-    skills: ["React", "TypeScript", "Tailwind", "Three.js", "Figma", "Blender"],
-  },
-  {
-    id: "backend",
-    title: "Backend & Systems",
-    description:
-      "Building robust, scalable server-side logic and high-performance algorithms.",
+    id: "languages",
+    title: "Languages",
     Icon: Code2,
-    skills: ["Python", "Java", "C++", "R", "Node.js"],
+    skills: ["Python", "TypeScript", "Java", "GLSL", "C++"],
   },
   {
-    id: "devops",
-    title: "Cloud & DevOps",
-    description:
-      "Streamlining deployment pipelines and managing cloud infrastructure.",
-    Icon: Terminal,
-    skills: ["AWS", "Google Cloud", "Docker", "Git", "Linux CLI"],
+    id: "systems",
+    title: "Systems & Cloud",
+    Icon: Cloud,
+    skills: ["AWS", "Docker", "Kubernetes", "Linux Arch"],
+  },
+  {
+    id: "tools",
+    title: "Tools & Design",
+    Icon: Palette,
+    skills: ["Figma", "Blender", "Three.js", "Spline"],
   },
 ];
 
-function FeatureCard({
-  card,
-  index,
-}: {
-  card: (typeof cards)[0];
-  index: number;
-}) {
+function CardRow({ card, index }: { card: (typeof cards)[0]; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.1 * index, duration: 0.5 }}
-      whileHover={{ y: -5 }}
-      className="flex flex-col h-full p-6 rounded-2xl
-                 bg-white/40 dark:bg-black/20 
-                 border border-white/40 dark:border-white/10
-                 backdrop-blur-sm shadow-sm
-                 hover:shadow-md hover:bg-white/50 dark:hover:bg-white/10
-                 transition-all group"
+      whileHover={{ scale: 1.02 }}
+      className="relative flex flex-col md:flex-row items-center gap-2 md:gap-4 p-3 md:p-4 rounded-xl
+                 liquid-glass-sm
+                 hover:shadow-lg transition-all group w-full"
     >
       <div
-        className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl 
+        className="flex-shrink-0 inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full
                       bg-white/60 dark:bg-white/5 
                       text-indigo-600 dark:text-indigo-300
                       shadow-inner border border-white/50 dark:border-white/5"
       >
-        <card.Icon size={24} strokeWidth={1.5} />
+        <card.Icon
+          size={16}
+          strokeWidth={2}
+          className="md:w-[18px] md:h-[18px]"
+        />
       </div>
 
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-        {card.title}
-      </h3>
-
-      <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-6 flex-grow">
-        {card.description}
-      </p>
-
-      <div className="flex flex-wrap gap-2 mt-auto">
+      <div className="flex flex-wrap justify-center md:justify-start gap-1.5 md:gap-2">
         {card.skills.map((skill) => (
           <span
             key={skill}
-            className="text-[10px] uppercase tracking-wider font-semibold 
-                       px-2 py-1 rounded-md
-                       bg-white/50 dark:bg-white/10 
-                       text-gray-600 dark:text-gray-400"
+            className="text-[clamp(0.7rem,1vw,1rem)] text-gray-600 dark:text-gray-300 font-medium px-1.5 py-0.5 rounded-md hover:bg-white/30 transition-colors"
           >
             {skill}
           </span>
@@ -94,120 +74,107 @@ function FeatureCard({
   );
 }
 
-function ProfileHeader() {
-  return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-      <div className="space-y-4 max-w-2xl">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full 
-                     bg-indigo-100/50 dark:bg-indigo-900/30 
-                     text-indigo-800 dark:text-indigo-200 
-                     text-xs font-bold uppercase tracking-widest"
-        >
-          <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-          Open to Work
-        </motion.div>
-
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white tracking-tight"
-        >
-          Grace Yuen
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed max-w-lg"
-        >
-          Obsessed with the space between{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            2D interfaces
-          </span>{" "}
-          and{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            3D environments
-          </span>
-          . I build digital archives that feel tangible.
-        </motion.p>
-      </div>
-
-      {/* Action Buttons */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-        className="flex gap-3"
-      >
-        <a
-          href="/resume.pdf" // Placeholder path
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl
-                     bg-gray-900 dark:bg-white text-white dark:text-gray-900
-                     font-semibold text-sm shadow-lg hover:shadow-xl
-                     hover:translate-y-[-2px] transition-all"
-        >
-          <Download size={16} />
-          Resume
-        </a>
-        <a
-          href="#contact" // Link to existing contact section
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl
-                     bg-white/50 dark:bg-white/10 
-                     border border-white/40 dark:border-white/10
-                     text-gray-900 dark:text-white
-                     font-semibold text-sm backdrop-blur-md
-                     hover:bg-white/80 dark:hover:bg-white/20 transition-all"
-        >
-          Contact
-          <ArrowRight size={16} />
-        </a>
-      </motion.div>
-    </div>
-  );
-}
-
 export function GlassCardProfile() {
+  const [isAnyHover, setIsAnyHover] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
   return (
-    <section className="relative w-full max-w-6xl mx-auto px-4 py-8">
-      {/* Background Glows matching the theme */}
-      <div className="absolute inset-0 -z-10 translate-y-20 opacity-40 dark:opacity-20 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-400/30 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-400/30 rounded-full blur-[120px]" />
+    <section className="w-full max-w-[90vw] xl:max-w-6xl mx-auto px-4 py-8 md:py-6 flex items-center justify-center min-h-[60vh] md:min-h-[70vh]">
+      {/* BACKGROUND TYPOGRAPHY "ABOUT" & "ME" */}
+      <div className={`${styles.bigText} ${styles.topLeft}`}>
+        {"ABOUT".split("").map((letter, i) => (
+          <AnimatedLetter
+            key={`bg-about-${i}`}
+            letter={letter}
+            index={i}
+            mouseX={mouseX}
+            mouseY={mouseY}
+            onHoverChange={(h) => setIsAnyHover(h)}
+            isHovered={isAnyHover}
+            useShader={false}
+            dynamicWeight={false}
+            className={styles.plainText}
+            style={{ "--char-index": i } as React.CSSProperties}
+          />
+        ))}
       </div>
 
-      {/* Main Container - The "Card" Look */}
-      <div
-        className="relative rounded-[2.5rem] p-8 md:p-12 overflow-hidden
-                      bg-white/20 dark:bg-black/20
-                      backdrop-blur-2xl backdrop-saturate-150
-                      border border-white/40 dark:border-white/10
-                      shadow-[0_8px_32px_rgba(0,0,0,0.05)]"
-      >
-        {/* Noise Texture */}
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none z-0 mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
+      <div className={`${styles.bigText} ${styles.bottomRight}`}>
+        {"ME".split("").map((letter, i) => (
+          <AnimatedLetter
+            key={`bg-me-${i}`}
+            letter={letter}
+            index={i}
+            mouseX={mouseX}
+            mouseY={mouseY}
+            onHoverChange={(h) => setIsAnyHover(h)}
+            isHovered={isAnyHover}
+            useShader={false}
+            dynamicWeight={false}
+            className={styles.plainText}
+            style={{ "--char-index": i } as React.CSSProperties}
+          />
+        ))}
+      </div>
 
-        {/* Content */}
-        <div className="relative z-10">
-          <ProfileHeader />
+      {/* MAIN CONTENT GRID */}
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+        {/* Left Column: CLEAN PROFILE (No Card Background) */}
+        <div className="h-full min-h-[400px] flex items-center">
+          <div className="h-full flex flex-col justify-center p-3">
+            <div>
+              <div className="text-[clamp(0.6rem,2vw,0.8rem)] md:text-[clamp(0.7rem,1.5vw,1rem)] font-bold tracking-[0.25em] text-indigo-500 mb-4 uppercase">
+                Creative Technologist
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {cards.map((card, idx) => (
-              <FeatureCard key={card.id} card={card} index={idx} />
-            ))}
+              {/* The "Developer" Title */}
+              <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-gray-900 dark:text-white tracking-tighter leading-none mb-3">
+                Developer
+              </h2>
+
+              <div className="mt-4 relative pl-4 border-l-2 border-indigo-500/30">
+                <p className="text-[clamp(0.875rem,3.5vw,1.25rem)] text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                  Bridging the gap between tangible interfaces and digital
+                  experiences. Currently crafting spatial web environments and
+                  exploring the frontiers of human-computer interaction with a
+                  focus on immersive utility.
+                </p>
+              </div>
+            </div>
+
+            {/* Stylized Buttons matching Screenshot */}
+            <div className="flex flex-wrap gap-2.5 mt-5">
+              {/* Download CV: Black BG, White Text, Rounded 2xl (More boxy pill) */}
+              <button className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase shadow-lg hover:translate-y-[-1.5px] hover:shadow-xl transition-all flex-1 sm:flex-none whitespace-nowrap">
+                <Download size={14} strokeWidth={3} />
+                Download CV
+              </button>
+
+              {/* Contact: White BG, Black Text, Rounded 2xl */}
+              <button className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-white text-gray-900 border border-gray-100 rounded-lg font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase shadow-sm hover:translate-y-[-1.5px] hover:shadow-md transition-all flex-1 sm:flex-none whitespace-nowrap">
+                Contact
+                <ArrowRight size={14} strokeWidth={3} />
+              </button>
+            </div>
           </div>
+        </div>
+
+        {/* Right Column: Stacked Cards */}
+        <div className="flex flex-col gap-4 justify-center">
+          {cards.map((card, idx) => (
+            <CardRow key={card.id} card={card} index={idx} />
+          ))}
         </div>
       </div>
     </section>
