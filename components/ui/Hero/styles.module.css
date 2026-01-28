@@ -124,17 +124,25 @@
 
 @media (max-width: 768px) {
   .section h1 {
-    font-size: 9vw;
+    font-size: 18vw; /* Significantly larger on mobile */
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; /* More spacing between stacked names */
   }
+  
+  /* Vertical split on mobile for cleaner reveal */
   .left {
-    transform: translate3d(calc(var(--progress) * -150vw - 2vw), -1.5vw, 0);
+    transform: translate3d(0, calc(var(--progress) * -100vh), 0);
   }
-  .lens {
-    width: 25vw;
-    height: 25vw;
-  }
+  
   .right {
-    transform: translate3d(calc(var(--progress) * 150vw + 1.5vw), 1.5vw, 0);
+    transform: translate3d(0, calc(var(--progress) * 100vh), 0);
+  }
+
+  .lens {
+    width: 60vw;
+    height: 60vw;
+    margin: 2rem 0;
   }
 }
 
@@ -153,11 +161,13 @@
   width: 10vw;
   height: auto;
   object-fit: contain;
+  transition: opacity 0.5s ease;
 }
 
 @media (max-width: 768px) {
   .section__images img {
-    width: 20vw;
+    width: 18vw;
+    opacity: 0.6; /* Fade out slightly on mobile to reduce clutter */
   }
 }
 
@@ -226,4 +236,16 @@
 
 .zoomContainer.active {
   pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .zoomContainer {
+    padding-bottom: 25vh; /* Adjusted to be slightly more than 20vh (moves content up), or user said "Move slightly downward" from previous which was 20vh?
+    Wait, user said "Move the pin position of about section a bit upward in mobile view" -> I added 20vh padding-bottom.
+    Now user says "Move slightly downward".
+    Downward means LESS padding-bottom (visual center goes down).
+    So 20vh -> 10vh.
+    */
+    padding-bottom: 10vh;
+  }
 }

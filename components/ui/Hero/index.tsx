@@ -83,10 +83,12 @@ export function Hero({ children }: { children?: React.ReactNode }) {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=250%", // Increased scroll distance for smoother control
-          scrub: 1, // Reduced scrub lag slightly for responsiveness
+          end: "+=180%", // Further shorten pin to exit sooner
+          scrub: 0.15, // Near-immediate response to scroll to avoid laggy release
           pin: true,
-          anticipatePin: 1, // Helps avoid pin jumps
+          anticipatePin: 0, // No anticipation to prevent overshoot
+          pinSpacing: true,
+          invalidateOnRefresh: true,
           onEnterBack: () => {
             setCenterTarget();
             setLensActive(true);
