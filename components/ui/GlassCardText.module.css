@@ -1,0 +1,132 @@
+.bigText {
+  font-family: var(--font-museo);
+  font-size: clamp(4rem, 16vw, 12rem); /* More flexible clamp */
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  position: absolute; /* Using absolute inside non-relative section attaches to nearest relative ancestor (the full hero zoom container) */
+  z-index: 0; /* Behind the card (which is z-10) */
+  line-height: 1;
+  pointer-events: auto;
+}
+
+.topLeft {
+  top: 5vh;
+  left: 3vw;
+}
+
+.bottomRight {
+  bottom: 5vh;
+  right: 3vw;
+}
+
+@media (max-width: 1024px) {
+  .topLeft {
+    top: 5vh;
+    left: 2vw;
+  }
+  .bottomRight {
+    bottom: 5vh;
+    right: 2vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .bigText {
+    font-size: clamp(3rem, 15vw, 6rem);
+  }
+  .topLeft {
+    top: 10vh;
+    left: 2vw;
+    opacity: 0.3; /* Subtle on mobile */
+  }
+  .bottomRight {
+    bottom: 10vh;
+    right: 2vw;
+    opacity: 0.3;
+  }
+}
+
+.plainText {
+   /* Copied from Hero/styles.module.css but modified for Card */
+   --x-0: 85%;
+   --y-0: 80%;
+   --c-0: hsla(267, 52%, 83%, 1);
+   --c-1: hsla(336, 100%, 82%, 1);
+   --y-1: 24%;
+   --x-1: 60%;
+   --c-2: hsla(54, 100%, 65%, 0.49);
+   --x-2: 13%;
+   --s-start-0: 9%;
+   --s-end-0: 55%;
+   --s-start-1: 5%;
+   --s-end-1: 72%;
+   --s-start-2: 5%;
+   --s-end-2: 52%;
+   --y-2: 82%;
+   --x-3: 24%;
+   --c-3: hsla(299, 72%, 68%, 1);
+   --s-start-3: 13%;
+   --s-end-3: 68%;
+   --y-3: 7%;
+   
+  background-color: rgba(255, 255, 255, 0.75);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 1133 1133' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"), 
+    radial-gradient(circle at var(--x-0) var(--y-0), hsla(267, 48%, 88%, 0.65) var(--s-start-0), transparent var(--s-end-0)), 
+    radial-gradient(circle at var(--x-1) var(--y-1), hsla(336, 70%, 88%, 0.65) var(--s-start-1), transparent var(--s-end-1)), 
+    radial-gradient(circle at var(--x-2) var(--y-2), hsla(54, 90%, 74%, 0.55) var(--s-start-2), transparent var(--s-end-2)), 
+    radial-gradient(circle at var(--x-3) var(--y-3), hsla(299, 70%, 80%, 0.6) var(--s-start-3), transparent var(--s-end-3)),
+    linear-gradient(135deg, hsla(267, 52%, 88%, 0.55), hsla(336, 70%, 86%, 0.55));
+   animation: ani-hero-gradient 10s linear infinite alternate;
+   background-blend-mode: overlay, normal, normal, normal, normal, normal;
+   will-change: transform, opacity;
+   
+  /* Local attachment so gradient stays visible on dark/light regardless of viewport */
+  background-attachment: local;
+  background-size: 200% 200%;
+  background-position: center;
+   background-repeat: no-repeat;
+   
+   -webkit-background-clip: text;
+   background-clip: text;
+   -webkit-text-fill-color: transparent !important;
+   color: transparent !important;
+
+   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.25);
+   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+}
+
+:global(.dark) .plainText {
+  background-color: hsla(306, 35%, 10%, 0.9);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1133 1133' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 34% 12%, hsla(23, 55%, 22%, 0.9) 18%, transparent 50%),
+    radial-gradient(circle at 69% 2%, hsla(349, 60%, 21%, 0.85) 8%, transparent 65%),
+    radial-gradient(circle at 81% 31%, hsla(240, 52%, 12%, 0.8) 9%, transparent 80%),
+    radial-gradient(circle at 41% 56%, hsla(229, 40%, 26%, 0.6) 6%, transparent 78%),
+    radial-gradient(circle at 86% 44%, hsla(319, 55%, 21%, 0.75) 6%, transparent 60%),
+    radial-gradient(circle at 57% 85%, hsla(310, 45%, 26%, 0.6) 15%, transparent 90%),
+    radial-gradient(circle at 43% 55%, hsla(359, 60%, 15%, 0.85) 3%, transparent 69%),
+    radial-gradient(circle at 26% 76%, hsla(289, 60%, 12%, 0.8) 0%, transparent 55%),
+    linear-gradient(135deg, hsla(267, 30%, 20%, 0.55), hsla(336, 32%, 21%, 0.55));
+  background-blend-mode: overlay, normal, normal, normal, normal, normal, normal, normal, normal, normal;
+
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+  animation: ani-hero-gradient 10s linear infinite alternate;
+}
+
+.wordWrapper {
+   /* Layout only - gradient moved to plainText to work with inline-block children */
+   position: relative;
+   display: flex;
+}
+
+@keyframes ani-hero-gradient {
+  0% {
+    background-size: 150% 150%;
+  }
+  100% {
+    background-size: 180% 180%;
+  }
+}

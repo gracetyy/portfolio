@@ -1,0 +1,240 @@
+"use client";
+
+import { motion, useMotionValue } from "framer-motion";
+import {
+  Code2,
+  Terminal,
+  Download,
+  ArrowRight,
+  Palette,
+  Cloud,
+} from "lucide-react";
+import { AnimatedLetter } from "./AnimatedLetter";
+import styles from "./GlassCardText.module.css";
+import { useState, useEffect } from "react";
+
+// Reorganized content to match screenshot specific cards
+const cards = [
+  {
+    id: "languages",
+    title: "Languages",
+    modId: "MOD_81",
+    Icon: Code2,
+    skills: ["Python", "TypeScript", "Java", "GLSL", "C++"],
+  },
+  {
+    id: "systems",
+    title: "Systems & Cloud",
+    modId: "MOD_82",
+    Icon: Cloud,
+    skills: ["AWS", "Docker", "Kubernetes", "Linux Arch"],
+  },
+  {
+    id: "tools",
+    title: "Tools & Design",
+    modId: "MOD_83",
+    Icon: Palette,
+    skills: ["Figma", "Blender", "Three.js", "Spline"],
+  },
+];
+
+function CardRow({ card, index }: { card: (typeof cards)[0]; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.1 * index, duration: 0.5 }}
+      whileHover={{ scale: 1.02 }}
+      className="relative flex flex-col md:flex-row items-center gap-6 p-6 rounded-2xl
+                 bg-white/40 dark:bg-black/20 
+                 border border-white/40 dark:border-white/10
+                 backdrop-blur-sm shadow-sm
+                 hover:shadow-md hover:bg-white/50 dark:hover:bg-white/10
+                 transition-all group w-full"
+    >
+      <div
+        className="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full
+                      bg-white/60 dark:bg-white/5 
+                      text-indigo-600 dark:text-indigo-300
+                      shadow-inner border border-white/50 dark:border-white/5"
+      >
+        <card.Icon size={20} strokeWidth={2} />
+      </div>
+
+      <div className="flex-grow text-center md:text-left">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+          {card.title}
+        </h3>
+
+        <div className="flex flex-wrap justify-center md:justify-start gap-2">
+          {card.skills.map((skill) => (
+            <span
+              key={skill}
+              className="text-sm text-gray-600 dark:text-gray-300 font-medium px-1.5 py-0.5 rounded-md hover:bg-white/30 transition-colors"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function GlassCardProfile() {
+  const [isAnyHover, setIsAnyHover] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  return (
+    <section className="relative w-full max-w-7xl mx-auto px-4 py-8 flex items-center justify-center min-h-[80vh]">
+      {/* BACKGROUND TYPOGRAPHY "ABOUT" & "ME" */}
+      <div className={`${styles.bigText} ${styles.topLeft}`}>
+        {"ABOUT".split("").map((letter, i) => (
+          <AnimatedLetter
+            key={`bg-about-${i}`}
+            letter={letter}
+            index={i}
+            mouseX={mouseX}
+            mouseY={mouseY}
+            onHoverChange={(h) => setIsAnyHover(h)}
+            isHovered={isAnyHover}
+            useShader={false}
+            className={styles.plainText}
+            style={{ "--char-index": i } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      <div className={`${styles.bigText} ${styles.bottomRight}`}>
+        {"ME".split("").map((letter, i) => (
+          <AnimatedLetter
+            key={`bg-me-${i}`}
+            letter={letter}
+            index={i}
+            mouseX={mouseX}
+            mouseY={mouseY}
+            onHoverChange={(h) => setIsAnyHover(h)}
+            isHovered={isAnyHover}
+            useShader={false}
+            className={styles.plainText}
+            style={{ "--char-index": i } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 -z-10 translate-y-20 opacity-40 dark:opacity-20 pointer-events-none">
+        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-purple-200/30 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-blue-200/30 rounded-full blur-[140px]" />
+      </div>
+
+      {/* MAIN CONTENT GRID */}
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        {/* Left Column: CLEAN PROFILE (No Card Background) */}
+        <div className="h-full min-h-[600px] flex items-center">
+          <div className="h-full flex flex-col justify-center p-4">
+            <div>
+              <div className="text-[10px] font-bold tracking-[0.25em] text-indigo-500 mb-6 uppercase">
+                Creative Technologist
+              </div>
+
+              {/* The "ABOUT ME" Title in Frosted Style */}
+              <div className="flex flex-col select-none">
+                <div className="flex">
+                  {"ABOUT".split("").map((letter, i) => (
+                    <AnimatedLetter
+                      key={`title-about-${i}`}
+                      letter={letter}
+                      index={i}
+                      mouseX={mouseX}
+                      mouseY={mouseY}
+                      onHoverChange={(h) => setIsAnyHover(h)}
+                      isHovered={isAnyHover}
+                      useShader={false}
+                      className={`${styles.plainText}`}
+                      style={
+                        {
+                          "--char-index": i,
+                          fontSize: "clamp(3rem, 5vw, 5rem)",
+                          fontWeight: 800,
+                          lineHeight: 0.9,
+                          margin: "0 -0.05em", // tighter tracking
+                        } as React.CSSProperties
+                      }
+                    />
+                  ))}
+                </div>
+                <div className="flex">
+                  {"ME".split("").map((letter, i) => (
+                    <AnimatedLetter
+                      key={`title-me-${i}`}
+                      letter={letter}
+                      index={i + 5}
+                      mouseX={mouseX}
+                      mouseY={mouseY}
+                      onHoverChange={(h) => setIsAnyHover(h)}
+                      isHovered={isAnyHover}
+                      useShader={false}
+                      className={`${styles.plainText}`}
+                      style={
+                        {
+                          "--char-index": i + 5,
+                          fontSize: "clamp(3rem, 5vw, 5rem)",
+                          fontWeight: 800,
+                          lineHeight: 0.9,
+                          margin: "0 -0.05em",
+                        } as React.CSSProperties
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 relative pl-6 border-l-2 border-indigo-500/30">
+                <p className="text-gray-600 dark:text-gray-300 md:text-lg leading-relaxed font-medium">
+                  Bridging the gap between tangible interfaces and digital
+                  experiences. Currently crafting spatial web environments and
+                  exploring the frontiers of human-computer interaction with a
+                  focus on immersive utility.
+                </p>
+              </div>
+            </div>
+
+            {/* Stylized Buttons matching Screenshot */}
+            <div className="flex gap-4 mt-10">
+              {/* Download CV: Black BG, White Text, Rounded 2xl (More boxy pill) */}
+              <button className="flex items-center gap-3 px-8 py-4 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg font-bold text-xs tracking-widest uppercase shadow-lg hover:translate-y-[-2px] hover:shadow-xl transition-all">
+                <Download size={16} strokeWidth={3} />
+                Download CV
+              </button>
+
+              {/* Contact: White BG, Black Text, Rounded 2xl */}
+              <button className="flex items-center gap-3 px-8 py-4 bg-white text-gray-900 border border-gray-100 rounded-lg font-bold text-xs tracking-widest uppercase shadow-sm hover:translate-y-[-2px] hover:shadow-md transition-all">
+                Contact
+                <ArrowRight size={16} strokeWidth={3} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Stacked Cards */}
+        <div className="flex flex-col gap-6 justify-center">
+          {cards.map((card, idx) => (
+            <CardRow key={card.id} card={card} index={idx} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
