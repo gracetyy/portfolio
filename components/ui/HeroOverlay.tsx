@@ -205,74 +205,7 @@ function HeroText({ fallbackMode }: { fallbackMode: boolean }) {
 }
 
 function StatusText({ fallbackMode }: { fallbackMode: boolean }) {
-  const heroTextOpacity = usePortfolioStore((state) => state.heroTextOpacity);
-  const isSceneReady = usePortfolioStore((state) => state.isSceneReady);
-  const [hoveredWord, setHoveredWord] = useState<string | null>(null);
-
-  const statusLines = [
-    "Year 3 Computer Science @ HKU",
-    "Developer / Builder / Problem Solver",
-  ];
-
-  const shouldShow = isSceneReady || fallbackMode;
-
-  return (
-    <AnimatePresence>
-      {heroTextOpacity > 0.1 && shouldShow && (
-        <motion.div
-          className="fixed bottom-8 left-8 z-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: heroTextOpacity }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          {statusLines.map((line, lineIndex) => (
-            <motion.div
-              key={lineIndex}
-              custom={lineIndex}
-              variants={statusTextVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="status-text text-white/60 mb-1"
-            >
-              {line.split(" ").map((word, wordIndex) => {
-                const isInteractive = [
-                  "Builder",
-                  "Developer",
-                  "Problem",
-                ].includes(word);
-                return (
-                  <span
-                    key={wordIndex}
-                    className={`inline-block mr-1 ${
-                      isInteractive
-                        ? "cursor-pointer transition-all duration-300"
-                        : ""
-                    }`}
-                    style={{
-                      textShadow:
-                        isInteractive && hoveredWord === word
-                          ? "0 0 20px rgba(0, 0, 255, 0.8), 0 0 40px rgba(0, 0, 255, 0.4)"
-                          : "none",
-                      color:
-                        isInteractive && hoveredWord === word
-                          ? "#ffffff"
-                          : undefined,
-                    }}
-                    onMouseEnter={() => isInteractive && setHoveredWord(word)}
-                    onMouseLeave={() => setHoveredWord(null)}
-                  >
-                    {word}
-                  </span>
-                );
-              })}
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  return null;
 }
 
 function DepthMeter() {
@@ -368,7 +301,6 @@ export function HeroOverlay() {
 
   return (
     <>
-      <HeroText fallbackMode={fallbackMode} />
       <StatusText fallbackMode={fallbackMode} />
       <DepthMeter />
     </>
