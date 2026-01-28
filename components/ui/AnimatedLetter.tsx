@@ -58,6 +58,7 @@ export function AnimatedLetter({
   onHoverChange,
   isHovered: parentHovered,
   useShader = true,
+  dynamicWeight = true,
   className,
   style,
 }: {
@@ -71,6 +72,7 @@ export function AnimatedLetter({
   onHoverChange?: (hovering: boolean) => void;
   isHovered?: boolean;
   useShader?: boolean;
+  dynamicWeight?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }) {
@@ -94,7 +96,9 @@ export function AnimatedLetter({
     return Math.hypot((x as number) - center.x, (y as number) - center.y);
   });
 
-  const weight = useTransform(distance, [0, 200], [900, 600]);
+  const weight = dynamicWeight
+    ? useTransform(distance, [0, 200], [900, 600])
+    : 800;
 
   // Shader gradient colors - vibrant on hover, subtle default
   // Adjust colors based on theme
