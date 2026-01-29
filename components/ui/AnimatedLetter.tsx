@@ -175,7 +175,7 @@ export function AnimatedLetter({
           fontWeight: weight,
         }}
       >
-        {letter === " " ? "\u00A0" : letter}
+        {letter === " " ? " " : letter}
       </motion.span>
 
       {/* Sweep Effect (Optional overlay) */}
