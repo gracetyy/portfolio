@@ -12,11 +12,6 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        navy: {
-          DEFAULT: 'var(--navy)',
-          deep: '#030308',
-          light: '#0a0a1a',
-        },
         primary: 'var(--primary)',
         highlight: 'var(--highlight)',
         void: {
