@@ -4,9 +4,8 @@
 :root {
   /* Light mode default colors */
   --background: #F5F5F5;
-  --foreground: #1A1A1A;
-  
-  --navy: #222222;
+  --foreground: #4e4b66;
+  --muted-text: #6a6783;
   --primary: #726ec4;
   --highlight: #EFA9D9;
   --card-white: #FAFAFA;
@@ -21,17 +20,113 @@
 .dark {
   /* Dark mode colors */
   --background: #050511;
-  --foreground: #F5F5F5;
-  
-  --navy: #050511;
+  --foreground: #E8E8E8;
+  --muted-text: #d1d5dc;
   --primary: #726ec4;
   --highlight: #EFA9D9;
   --card-white: #1a1a1a;
   --card-background: #0a0a0a;
 }
 
-* {
-  box-sizing: border-box;
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.shiny-cv-button {
+  --bg: var(--foreground);
+  --border-width: 2px;
+  --radius: 8px; /* matching rounded-lg */
+  
+  /* Placeholder border when not hovered */
+  --border-color: rgba(127, 127, 127, 0.2);
+  
+  /* Gradient for hover - Light */
+  --glow-gradient-light: conic-gradient(
+    from var(--angle),
+    hsla(267, 52%, 83%, 1),
+    hsla(336, 100%, 82%, 1),
+    hsla(54, 100%, 65%, 1),
+    hsla(299, 72%, 68%, 1),
+    hsla(267, 52%, 83%, 1)
+  );
+
+  /* Gradient for hover - Dark */
+  --glow-gradient-dark: conic-gradient(
+    from var(--angle),
+    hsla(349, 93%, 67%, 1),
+    hsla(289, 88%, 50%, 1),
+    hsla(240, 82%, 36%, 1),
+    hsla(310, 57%, 98%, 1),
+    hsla(349, 93%, 67%, 1)
+  );
+
+  --current-gradient: var(--border-color);
+
+  position: relative;
+  background: 
+    linear-gradient(var(--bg), var(--bg)) padding-box,
+    var(--current-gradient) border-box;
+  border: var(--border-width) solid transparent !important;
+  border-radius: var(--radius) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--background) !important;
+}
+
+
+.shiny-cv-button:hover {
+  --current-gradient: var(--glow-gradient-light);
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.dark .shiny-cv-button:hover {
+  --current-gradient: var(--glow-gradient-dark);
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.contact-button {
+  --bg: var(--background);
+  --text-color: var(--foreground);
+  --border-color: rgba(78, 75, 102, 0.6);
+  --border-width: 2px;
+  --radius: 8px;
+  --neutral-gradient: conic-gradient(from var(--angle), transparent, var(--border-color), transparent);
+  --current-gradient: transparent;
+  
+  background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--current-gradient) border-box;
+  color: var(--text-color) !important;
+  border: var(--border-width) solid transparent !important;
+  border-radius: var(--radius) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.contact-button:hover {
+  --current-gradient: var(--neutral-gradient);
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.dark .contact-button {
+  --bg: #1a1a1a;
+  --neutral-gradient: conic-gradient(from var(--angle), transparent, var(--border-color), transparent);
+  --border-color: rgba(238, 238, 238, 0.6);
 }
 
 html {
