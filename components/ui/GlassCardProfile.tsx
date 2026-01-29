@@ -11,7 +11,109 @@ import {
 } from "lucide-react";
 import { AnimatedLetter } from "./AnimatedLetter";
 import styles from "./GlassCardText.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+const words = [
+  "Developer",
+  "Entrepreneur",
+  "Storyteller",
+  "Problem Solver",
+  "Leader",
+  "Engineer",
+  "Builder",
+  "Creator",
+  "Innovator",
+];
+
+function MorphingText() {
+  const text1Ref = useRef<HTMLSpanElement>(null);
+  const text2Ref = useRef<HTMLSpanElement>(null);
+  const textIndexRef = useRef(0);
+
+  useEffect(() => {
+    let time = new Date();
+    let morph = 0;
+    const morphTime = 1.5;
+    const cooldownTime = 1.5;
+    let cooldown = cooldownTime;
+
+    function setMorph(fraction: number) {
+      if (text1Ref.current && text2Ref.current) {
+        const index = textIndexRef.current;
+        text1Ref.current.textContent = words[index % words.length];
+        text2Ref.current.textContent = words[(index + 1) % words.length];
+
+        text2Ref.current.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+        text2Ref.current.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+        const fractionInv = 1 - fraction;
+        text1Ref.current.style.filter = `blur(${Math.min(8 / fractionInv - 8, 100)}px)`;
+        text1Ref.current.style.opacity = `${Math.pow(fractionInv, 0.4) * 100}%`;
+      }
+    }
+
+    function doMorph(dt: number) {
+      morph += dt;
+      if (morph >= morphTime) {
+        cooldown = cooldownTime;
+        morph = 0;
+        textIndexRef.current++;
+        doCooldown();
+      } else {
+        setMorph(morph / morphTime);
+      }
+    }
+
+    function doCooldown() {
+      morph = 0;
+      if (text1Ref.current && text2Ref.current) {
+        text2Ref.current.textContent =
+          words[textIndexRef.current % words.length];
+        text2Ref.current.style.filter = "";
+        text2Ref.current.style.opacity = "100%";
+        text1Ref.current.style.filter = "";
+        text1Ref.current.style.opacity = "0%";
+      }
+    }
+
+    // Initial state
+    doCooldown();
+
+    let rafId: number;
+    const animate = () => {
+      rafId = requestAnimationFrame(animate);
+      const newTime = new Date();
+      const dt = (newTime.getTime() - time.getTime()) / 1000;
+      time = newTime;
+
+      cooldown -= dt;
+      if (cooldown <= 0) {
+        doMorph(dt);
+      } else {
+        // Stay in cooldown state
+      }
+    };
+
+    animate();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  return (
+    <div
+      className="relative mb-3 h-[clamp(2.5rem,6vw,5rem)] flex items-center select-none"
+      style={{ filter: "url(#threshold)" }}
+    >
+      <span
+        ref={text1Ref}
+        className="absolute w-full text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-foreground tracking-tighter leading-none inline-block whitespace-nowrap"
+      />
+      <span
+        ref={text2Ref}
+        className="absolute w-full text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-foreground tracking-tighter leading-none inline-block whitespace-nowrap"
+      />
+    </div>
+  );
+}
 
 // Reorganized content to match screenshot specific cards
 const cards = [
@@ -134,17 +236,14 @@ export function GlassCardProfile() {
         <div className="h-full min-h-[400px] flex items-center">
           <div className="h-full flex flex-col justify-center p-3">
             <div>
-              <div className="text-[clamp(0.6rem,2vw,0.8rem)] md:text-[clamp(0.7rem,1.5vw,1rem)] font-bold tracking-[0.25em] text-indigo-500 mb-4 uppercase">
-                Creative Technologist
-              </div>
-
-              {/* The "Developer" Title */}
-              <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold text-gray-900 dark:text-white tracking-tighter leading-none mb-3">
-                Developer
-              </h2>
+              {/* The "Developer" Morphing Title */}
+              <MorphingText />
 
               <div className="mt-4 relative pl-4 border-l-2 border-indigo-500/30">
-                <p className="text-[clamp(0.875rem,3.5vw,1.25rem)] text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                <p
+                  className="text-[clamp(0.875rem,3.5vw,1.25rem)] leading-relaxed font-medium"
+                  style={{ color: "var(--muted-text)" }}
+                >
                   Bridging the gap between tangible interfaces and digital
                   experiences. Currently crafting spatial web environments and
                   exploring the frontiers of human-computer interaction with a
@@ -153,16 +252,15 @@ export function GlassCardProfile() {
               </div>
             </div>
 
-            {/* Stylized Buttons matching Screenshot */}
             <div className="flex flex-wrap gap-2.5 mt-5">
-              {/* Download CV: Black BG, White Text, Rounded 2xl (More boxy pill) */}
-              <button className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase shadow-lg hover:translate-y-[-1.5px] hover:shadow-xl transition-all flex-1 sm:flex-none whitespace-nowrap">
+              {/* Download CV: Shiny button */}
+              <button className="shiny-cv-button flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase transition-all flex-1 sm:flex-none whitespace-nowrap">
                 <Download size={14} strokeWidth={3} />
                 Download CV
               </button>
 
-              {/* Contact: White BG, Black Text, Rounded 2xl */}
-              <button className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-white text-gray-900 border border-gray-100 rounded-lg font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase shadow-sm hover:translate-y-[-1.5px] hover:shadow-md transition-all flex-1 sm:flex-none whitespace-nowrap">
+              {/* Contact: Light BG in light mode, Dark BG in dark mode, with solid border */}
+              <button className="contact-button gap-1.5 px-4 sm:px-5 py-2.5 font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase flex-1 sm:flex-none whitespace-nowrap">
                 Contact
                 <ArrowRight size={14} strokeWidth={3} />
               </button>
@@ -177,6 +275,26 @@ export function GlassCardProfile() {
           ))}
         </div>
       </div>
+
+      {/* Gooey SVG Filter for MorphingText */}
+      <svg
+        style={{ position: "absolute", width: 0, height: 0 }}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <filter id="threshold">
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 255 -140"
+            />
+          </filter>
+        </defs>
+      </svg>
     </section>
   );
 }
