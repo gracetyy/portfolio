@@ -19,13 +19,10 @@
   line-height: 1;
 }
 
-:global(.dark) .section h1 {
-}
-
 .gradientText {
   /* Continuous gradient logic: shifting background position based on char index */
   --bg-pos: 0;
-  background: linear-gradient(to right, #ffffff, #ffffff); 
+  background: linear-gradient(to right, #EC6F66, #F3A183); 
   background-size: 70vw 100%; /* Approx width of title */
   background-position: calc(var(--char-index) * -6vw) top; /* Shift gradient left for each char */
   background-attachment: scroll; /* Move with text */
@@ -56,6 +53,7 @@
   width: 12vw;
   height: 12vw;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  -webkit-backdrop-filter: brightness(1.1) blur(2px) contrast(1.1);
   backdrop-filter: brightness(1.1) blur(2px) contrast(1.1);
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.4);

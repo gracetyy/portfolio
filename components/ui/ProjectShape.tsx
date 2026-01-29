@@ -5,8 +5,8 @@ import styles from "./ProjectShape.module.css";
 
 export function ProjectShape() {
   const [rotation, setRotation] = useState(0);
-  const requestRef = useRef<number>();
-  const startTimeRef = useRef<number>();
+  const requestRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(0);
 
   const animate = (time: number) => {
     if (!startTimeRef.current) startTimeRef.current = time;
