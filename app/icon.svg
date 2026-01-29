@@ -1,4 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" fill="#050511"/>
-  <text x="50" y="70" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#00E5FF" text-anchor="middle">G</text>
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+	<!-- Noise overlay to mimic hero text grain -->
+	<filter id="heroNoise" x="0" y="0" width="100%" height="100%">
+		<feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+		<feColorMatrix type="saturate" values="0"/>
+	</filter>
+
+	<!-- Radial lobes matching hero palette -->
+	<radialGradient id="rg0" cx="85%" cy="80%" r="82%" gradientUnits="objectBoundingBox">
+		<stop offset="0%" stop-color="hsl(267,60%,80%)" stop-opacity="1"/>
+		<stop offset="70%" stop-color="hsl(267,60%,80%)" stop-opacity="0"/>
+	</radialGradient>
+	<radialGradient id="rg1" cx="60%" cy="24%" r="78%" gradientUnits="objectBoundingBox">
+		<stop offset="0%" stop-color="hsl(336,100%,82%)" stop-opacity="1"/>
+		<stop offset="78%" stop-color="hsl(336,100%,82%)" stop-opacity="0"/>
+	</radialGradient>
+	<radialGradient id="rg2" cx="13%" cy="82%" r="75%" gradientUnits="objectBoundingBox">
+		<stop offset="0%" stop-color="hsl(54,100%,52%)" stop-opacity="0.8"/>
+		<stop offset="68%" stop-color="hsl(54,100%,52%)" stop-opacity="0"/>
+	</radialGradient>
+	<radialGradient id="rg3" cx="24%" cy="7%" r="76%" gradientUnits="objectBoundingBox">
+		<stop offset="0%" stop-color="hsl(299,72%,68%)" stop-opacity="1"/>
+		<stop offset="70%" stop-color="hsl(299,72%,68%)" stop-opacity="0"/>
+	</radialGradient>
+
+	<!-- Pattern layering the lobes and grain -->
+	<pattern id="heroPattern" patternUnits="userSpaceOnUse" width="720" height="720">
+		<rect width="720" height="720" fill="white" opacity="0.25"/>
+		<rect width="720" height="720" fill="url(#rg0)"/>
+		<rect width="720" height="720" fill="url(#rg1)"/>
+		<rect width="720" height="720" fill="url(#rg2)"/>
+		<rect width="720" height="720" fill="url(#rg3)"/>
+		<rect width="720" height="720" filter="url(#heroNoise)" opacity="0.32"/>
+	</pattern>
+</defs>
+<rect width="720" height="720" fill="#e8e8e8"/>
+<rect width="720" height="720" fill="url(#heroPattern)"/>
+<path d="M431.653 289.822L470.5 236.5L410.5 152H333.5L431.653 289.822Z" fill="white"/>
+<path d="M452 539V308.599L564.362 152.519H642.462L515.905 327.373V499.803L452 539Z" fill="white"/>
+<path d="M515.905 530.803L452 570V544L515.905 504.776V530.803Z" fill="white"/>
+<path d="M515.905 580.717H452V549L515.905 509.776V580.717Z" fill="white"/>
+<path d="M423.5 399.178V338.5H257.205V400.178H359.5V575.637C382.133 572.245 402.597 564.5 423.5 554.47V399.178Z" fill="white"/>
+<path d="M423.5 580.637H359.5C382.133 577.245 402.597 569.5 423.5 559.47V580.637Z" fill="white"/>
+<path d="M307.5 517C309.497 517.105 318 517 318 517C318 517 328.908 516.5 330 516.5C331 516.5 332 517 332 518.5L332.011 579C332 580 331 581 330 581C321.273 581.455 308.227 581 301.5 581C288.961 581 273.023 577.94 263 575.5C239.673 569.822 222.099 562.665 200 550C183.21 540.036 168.617 527.942 155 514C143.322 502.044 135 491 124 472.5C114.869 457.143 110.057 443.45 105.5 430C98.5872 409.596 96 390.251 96 366C96 335.42 101.5 305.5 114.5 279C125 254.5 138 236 158.5 214.5C177.538 195.589 206 176 227 168C251.938 158.5 267.5 153.5 299 152L345 217C337 215.5 325.508 215 310.5 215C301 215 284 216.5 270 221C254 226.143 247.119 228.671 236.5 235C214.627 248.278 197.5 264 182.5 287.5C169.538 310.435 161 333.225 161 363C161 392.373 166 416.5 182.5 443.5C199 468.5 213 482 235 496C250.539 505.262 259 508.5 280.5 514C288.095 515.318 298 516.5 307.5 517Z" fill="white"/>
 </svg>
