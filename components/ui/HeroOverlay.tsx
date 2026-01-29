@@ -214,7 +214,7 @@ function DepthMeter() {
 
   const smoothScroll = useSpring(0, {
     stiffness: 50,
-    damping: 15,
+    damping: 28,
   });
 
   useEffect(() => {
@@ -251,13 +251,13 @@ function DepthMeter() {
               className="absolute top-0 left-0 w-full bg-gradient-to-b from-white/60 via-white/40 to-transparent depth-meter-glow rounded-full"
               style={{ height }}
               animate={{
-                scaleY: isScrolling ? 1.02 : 1,
+                scaleY: isScrolling ? 1.01 : 1,
               }}
               transition={{
                 scaleY: {
                   type: "spring",
-                  stiffness: 300,
-                  damping: 10,
+                  stiffness: 140,
+                  damping: 28,
                 },
               }}
             />
@@ -269,12 +269,12 @@ function DepthMeter() {
                 boxShadow: "0 0 10px rgba(255,255,255,0.5)",
               }}
               animate={{
-                scale: isScrolling ? 1.3 : 1,
+                scale: isScrolling ? 1.12 : 1,
               }}
               transition={{
                 type: "spring",
-                stiffness: 300,
-                damping: 15,
+                stiffness: 140,
+                damping: 22,
               }}
             />
           </div>
