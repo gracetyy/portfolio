@@ -8,8 +8,14 @@ import {
   ArrowRight,
   Palette,
   Cloud,
+  Send,
 } from "lucide-react";
 import { AnimatedLetter } from "./AnimatedLetter";
+import { GlowBorderButton, GlowBorderButtonDefs } from "./GlowBorderButton";
+import {
+  DownloadIcon as AnimatedDownloadIcon,
+  MessageSquareMoreIcon as AnimatedMessageIcon,
+} from "./icons";
 import styles from "./GlassCardText.module.css";
 import { useState, useEffect, useRef } from "react";
 
@@ -138,31 +144,50 @@ const cards = [
 ];
 
 function CardRow({ card, index }: { card: (typeof cards)[0]; index: number }) {
+  const maskId = `icon-mask-${index}`;
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.1 * index, duration: 0.5 }}
-      whileHover={{ scale: 1.02 }}
-      className="relative flex flex-col md:flex-row items-center gap-2 md:gap-4 p-3 md:p-4 rounded-xl
+      whileHover={{ scale: 1.01 }}
+      className="relative flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl
                  liquid-glass-sm
                  hover:shadow-lg transition-all group w-full"
     >
-      <div
-        className="flex-shrink-0 inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full
-                      bg-white/60 dark:bg-white/5 
-                      text-indigo-600 dark:text-indigo-300
-                      shadow-inner border border-white/50 dark:border-white/5"
-      >
-        <card.Icon
-          size={16}
-          strokeWidth={2}
-          className="md:w-[18px] md:h-[18px]"
-        />
+      <div className="flex-shrink-0 inline-flex items-center justify-center w-7 h-7 md:w-10 md:h-10 rounded-full">
+        {/* Using SVG Masking to apply the complex CSS animated gradient to the icon stroke */}
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 24 24"
+          className="w-[18px] h-[18px] md:w-[24px] md:h-[24px] overflow-visible"
+        >
+          <defs>
+            <mask id={maskId} maskUnits="userSpaceOnUse">
+              <card.Icon
+                size={24}
+                stroke="white"
+                strokeWidth={2}
+                fill="none"
+                color="white"
+              />
+            </mask>
+          </defs>
+          <foreignObject
+            x="0"
+            y="0"
+            width="24"
+            height="24"
+            mask={`url(#${maskId})`}
+          >
+            <div className="static-mesh-gradient dark:brightness-[1.15]" />
+          </foreignObject>
+        </svg>
       </div>
 
-      <div className="flex flex-wrap justify-center md:justify-start gap-1.5 md:gap-2">
+      <div className="flex flex-wrap justify-start gap-1.5 md:gap-2">
         {card.skills.map((skill) => (
           <span
             key={skill}
@@ -239,7 +264,7 @@ export function GlassCardProfile() {
               {/* The "Developer" Morphing Title */}
               <MorphingText />
 
-              <div className="mt-4 relative pl-4 border-l-2 border-indigo-500/30">
+              <div className={styles.aboutLine}>
                 <p
                   className="text-[clamp(0.875rem,3.5vw,1.25rem)] leading-relaxed font-medium"
                   style={{ color: "var(--muted-text)" }}
@@ -253,17 +278,27 @@ export function GlassCardProfile() {
             </div>
 
             <div className="flex flex-wrap gap-2.5 mt-5">
-              {/* Download CV: Shiny button */}
-              <button className="shiny-cv-button flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase transition-all flex-1 sm:flex-none whitespace-nowrap">
-                <Download size={14} strokeWidth={3} />
-                Download CV
-              </button>
+              <GlowBorderButtonDefs />
 
-              {/* Contact: Light BG in light mode, Dark BG in dark mode, with solid border */}
-              <button className="contact-button gap-1.5 px-4 sm:px-5 py-2.5 font-bold text-[clamp(0.6rem,1.5vw,0.75rem)] tracking-[0.25em] sm:tracking-[0.35em] uppercase flex-1 sm:flex-none whitespace-nowrap">
-                Contact
-                <ArrowRight size={14} strokeWidth={3} />
-              </button>
+              {/* Contact: Primary Style (Opposite color) */}
+              <GlowBorderButton
+                variant="primary"
+                icon={AnimatedMessageIcon}
+                className="text-xs sm:text-sm tracking-widest uppercase"
+                style={{ padding: "0.8em 1.4em" }}
+              >
+                Contact Me
+              </GlowBorderButton>
+
+              {/* Download CV: Secondary Style (Same color) */}
+              <GlowBorderButton
+                variant="secondary"
+                icon={AnimatedDownloadIcon}
+                className="text-xs sm:text-sm tracking-widest uppercase"
+                style={{ padding: "0.8em 1.4em" }} // Slight adjustment for layout validation
+              >
+                Download CV
+              </GlowBorderButton>
             </div>
           </div>
         </div>

@@ -38,12 +38,12 @@
   .topLeft {
     top: 10vh;
     left: 2vw;
-    opacity: 0.3; /* Subtle on mobile */
+    opacity: 0.15; /* More subtle on mobile */
   }
   .bottomRight {
     bottom: 10vh;
     right: 2vw;
-    opacity: 0.3;
+    opacity: 0.15;
   }
 }
 
@@ -98,21 +98,18 @@
 }
 
 :global(.dark) .plainText {
-  background-color: hsla(306, 35%, 10%, 0.9);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1133 1133' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 34% 12%, hsla(23, 55%, 22%, 0.9) 18%, transparent 50%),
-    radial-gradient(circle at 69% 2%, hsla(349, 60%, 21%, 0.85) 8%, transparent 65%),
-    radial-gradient(circle at 81% 31%, hsla(240, 52%, 12%, 0.8) 9%, transparent 80%),
-    radial-gradient(circle at 41% 56%, hsla(229, 40%, 26%, 0.6) 6%, transparent 78%),
-    radial-gradient(circle at 86% 44%, hsla(319, 55%, 21%, 0.75) 6%, transparent 60%),
-    radial-gradient(circle at 57% 85%, hsla(310, 45%, 26%, 0.6) 15%, transparent 90%),
-    radial-gradient(circle at 43% 55%, hsla(359, 60%, 15%, 0.85) 3%, transparent 69%),
-    radial-gradient(circle at 26% 76%, hsla(289, 60%, 12%, 0.8) 0%, transparent 55%),
-    linear-gradient(135deg, hsla(267, 30%, 20%, 0.55), hsla(336, 32%, 21%, 0.55));
-  background-blend-mode: overlay, normal, normal, normal, normal, normal, normal, normal, normal, normal;
+  background-color: hsla(270, 15%, 8%, 0.85);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 1133 1133' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"), 
+    radial-gradient(circle at var(--x-0) var(--y-0), hsla(267, 10%, 15%, 0.7) var(--s-start-0), transparent var(--s-end-0)), 
+    radial-gradient(circle at var(--x-1) var(--y-1), hsla(336, 15%, 15%, 0.7) var(--s-start-1), transparent var(--s-end-1)), 
+    radial-gradient(circle at var(--x-2) var(--y-2), hsla(54, 20%, 12%, 0.6) var(--s-start-2), transparent var(--s-end-2)), 
+    radial-gradient(circle at var(--x-3) var(--y-3), hsla(299, 15%, 15%, 0.65) var(--s-start-3), transparent var(--s-end-3)),
+    linear-gradient(135deg, hsla(267, 10%, 12%, 0.6), hsla(336, 12%, 12%, 0.6));
+  background-blend-mode: overlay, normal, normal, normal, normal, normal;
 
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.2));
   animation: ani-hero-gradient 10s linear infinite alternate;
 }
 
@@ -120,6 +117,27 @@
    /* Layout only - gradient moved to plainText to work with inline-block children */
    position: relative;
    display: flex;
+}
+
+.aboutLine {
+  position: relative;
+  /* Moving the block slightly back outward */
+  margin-left: 0.75rem;
+  /* Space for the vertical line and text gap */
+  padding-left: 1.25rem;
+  margin-top: 2rem;
+}
+
+.aboutLine::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--muted-text);
+  border-radius: 999px;
+  opacity: 0.3;
 }
 
 @keyframes ani-hero-gradient {
@@ -130,3 +148,12 @@
     background-size: 180% 180%;
   }
 }
+
+.iconGradientDefs {
+  /* ... keeping variables if needed, or remove them ... */
+  display: none;
+}
+
+
+
+
