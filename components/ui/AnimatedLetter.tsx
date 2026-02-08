@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useTransform } from "framer-motion";
+import { motion, useTransform, useMotionTemplate } from "framer-motion";
 import { MeshGradient as PaperMeshGradient } from "@paper-design/shaders-react";
 import { useTheme } from "next-themes";
 
@@ -55,6 +55,8 @@ export function AnimatedLetter({
   mouseX,
   mouseY,
   highlightColor = "rgba(255,255,255,0.5)",
+  isGrace = false,
+  cardsVisible = false,
   onHoverChange,
   isHovered: parentHovered,
   useShader = true,
@@ -96,9 +98,25 @@ export function AnimatedLetter({
     return Math.hypot((x as number) - center.x, (y as number) - center.y);
   });
 
-  const weight = dynamicWeight
-    ? useTransform(distance, [0, 200], [900, 600])
-    : 800;
+  const weight = useTransform(
+    distance,
+    [0, 150],
+    dynamicWeight ? [900, 600] : [800, 800],
+  );
+
+  const wdth = useTransform(
+    distance,
+    [0, 150],
+    dynamicWeight ? [200, 100] : [100, 100],
+  );
+
+  const fontVariationSettings = useMotionTemplate`"wght" ${weight}, "wdth" ${wdth}`;
+
+  // Use a transform to create an animated mask data-uri that doesn't "eat" the letters
+  const maskImage = useTransform([weight, wdth], ([w, s]) => {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-size='100%' fill='white' style='font-variation-settings: "wght" ${w}, "wdth" ${s}; font-feature-settings: "ss01" ${letter.toUpperCase() === "N" ? 0 : 1}'>${letter}</text></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  });
 
   // Shader gradient colors - vibrant on hover, subtle default
   // Adjust colors based on theme
@@ -124,21 +142,13 @@ export function AnimatedLetter({
     >
       {/* Shader gradient layer - masked by the text shape */}
       {useShader && letter !== " " && (
-        <div
+        <motion.div
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
-                letter.toUpperCase() === "N" ? 0 : 1
-              }">${letter}</text></svg>`,
-            )}")`,
+            WebkitMaskImage: maskImage,
             WebkitMaskSize: "100% 100%",
             WebkitMaskRepeat: "no-repeat",
-            maskImage: `url("data:image/svg+xml,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg'><text x='50%' y='85%' text-anchor='middle' font-family='MuseoModerno' font-weight='700' font-size='100%' fill='white' style="font-feature-settings: 'ss01' ${
-                letter.toUpperCase() === "N" ? 0 : 1
-              }">${letter}</text></svg>`,
-            )}")`,
+            maskImage: maskImage,
             maskSize: "100% 100%",
             maskRepeat: "no-repeat",
           }}
@@ -152,7 +162,7 @@ export function AnimatedLetter({
             grainMixer={0.02}
             speed={parentHovered ? 0.5 : 0.3}
           />
-        </div>
+        </motion.div>
       )}
       {/* Text layer - transparent to show shader through */}
       <motion.span
@@ -167,12 +177,11 @@ export function AnimatedLetter({
           display: letter === " " ? "inline" : "inline-block",
           color: useShader ? "transparent" : "currentColor",
           WebkitTextStroke: useShader ? "0px transparent" : undefined,
-          ["--wght" as any]: weight,
           ["fontFeatureSettings" as any]:
             letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
           ["WebkitFontFeatureSettings" as any]:
             letter.toUpperCase() === "N" ? "'ss01' 0" : "'ss01' 1",
-          fontWeight: weight,
+          fontVariationSettings,
         }}
       >
         {letter === " " ? " " : letter}

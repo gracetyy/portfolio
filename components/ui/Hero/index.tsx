@@ -83,10 +83,10 @@ export function Hero({ children }: { children?: React.ReactNode }) {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=180%", // Further shorten pin to exit sooner
-          scrub: 0.15, // Near-immediate response to scroll to avoid laggy release
+          end: "+=120%", // Further shorten pin to exit sooner
+          scrub: true, // Perfect sync with scroll
           pin: true,
-          anticipatePin: 0, // No anticipation to prevent overshoot
+          anticipatePin: 1, // Small anticipation for smoother entry
           pinSpacing: true,
           invalidateOnRefresh: true,
           onEnterBack: () => {

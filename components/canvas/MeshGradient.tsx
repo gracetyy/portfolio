@@ -33,10 +33,10 @@ export function MeshGradient() {
         colors={
           isDark
             ? [
-                "#0f0f13", // Pure Black
-                "#010221", // Dark Blue
-                "#121212", // Mac Dark Gray
-                "#180436", // Dark Purple
+                "#43364A", // Muted Purple
+                "#2F3043", // Dark Blue-Purple
+                "#1B1724", // Darkest Purple
+                "#2F3043", // Repeated Blue-Purple for flow
               ]
             : [
                 "#FFE4E1", // MistyRose (Very Light Pink)

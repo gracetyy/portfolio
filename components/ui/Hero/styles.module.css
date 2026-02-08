@@ -37,10 +37,10 @@
   background-blend-mode: overlay, normal, normal, normal, normal;
   will-change: transform, opacity;
   
-  /* Continuous Gradient Logic (Stitching) */
-  background-attachment: scroll;
-  background-size: 80vw 100vh;
-  background-position: calc(50% + (4.5 - var(--char-index)) * 7vw) center; 
+  /* Continuous Gradient Logic (Fixed Viewport Sampling) */
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  background-position: center center;
   background-repeat: no-repeat;
   
   /* Text clip properties */
@@ -48,6 +48,10 @@
   background-clip: text;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
+
+  /* Prevent clipping of extreme widths (G, N) */
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
 
   /* Frosted Glass Accents */
   /* 1. Subtle white stroke for the 'etched' edge */
@@ -123,6 +127,13 @@
 }
 
 @media (max-width: 768px) {
+  .plainText {
+    /* Fixed background can be jumpy on mobile, so we use scroll with full coverage here */
+    background-attachment: scroll;
+    background-size: 100% 100%;
+    background-position: center center;
+  }
+
   .section h1 {
     font-size: 18vw; /* Significantly larger on mobile */
     flex-direction: column;
@@ -211,7 +222,13 @@
   /* Dark Mode specific shadows */
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
-  animation: none;
+  animation: ani-hero-gradient 10s linear infinite alternate;
+  
+  /* Fixed sampling for dark mode as well */
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .zoomContainer {

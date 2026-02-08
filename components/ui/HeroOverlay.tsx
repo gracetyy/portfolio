@@ -301,6 +301,7 @@ export function HeroOverlay() {
 
   return (
     <>
+      {fallbackMode && <HeroText fallbackMode={fallbackMode} />}
       <StatusText fallbackMode={fallbackMode} />
       <DepthMeter />
     </>
