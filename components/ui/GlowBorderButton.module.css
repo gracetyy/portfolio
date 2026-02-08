@@ -1,0 +1,179 @@
+
+/* --- Core Settings --- */
+.container {
+    --transition: 0.25s;
+    --spark: 1.8s;
+    --active: 0;
+    display: inline-flex;
+}
+
+/* Theme color definitions */
+.container {
+    /* DEFAULT / DARK THEME */
+    --clr-light: #fafafa;
+    --clr-dark: #4e4b66;
+    --clr-pink: #f472b6; /* Soft vibrant pink */
+    --clr-pink-glow: hsl(330 90% 65% / 0.5);
+    --border-to-light: rgba(250, 250, 250, 0.5);
+    --border-to-dark: rgba(78, 75, 102, 0.5);
+}
+
+/* THEME: DARK (Default) */
+.primary {
+    --bg-color: var(--clr-light);
+    --text-color: var(--clr-dark);
+    --icon-color: var(--clr-dark);
+    --spark-color: var(--clr-pink);
+    --glow-color: var(--clr-pink-glow);
+}
+
+.secondary {
+    --bg-color: var(--clr-dark);
+    --text-color: var(--clr-light);
+    --icon-color: var(--clr-light);
+    --spark-color: var(--clr-pink);
+    --glow-color: var(--clr-pink-glow);
+    --border-opposite: var(--border-to-light);
+}
+
+/* THEME: LIGHT OVERRIDE */
+:global(.light) .primary {
+    --bg-color: var(--clr-dark);
+    --text-color: var(--clr-light);
+    --icon-color: var(--clr-light);
+    --spark-color: var(--clr-pink);
+    --glow-color: var(--clr-pink-glow);
+}
+
+:global(.light) .secondary {
+    --bg-color: var(--clr-light);
+    --text-color: var(--clr-dark);
+    --icon-color: var(--clr-dark);
+    --spark-color: var(--clr-pink);
+    --glow-color: var(--clr-pink-glow);
+}
+
+/* Button Structure */
+.btn {
+    --cut: 0.1em;
+    --radius: 0.65em; 
+    position: relative;
+    background: var(--bg-color);
+    font-size: inherit; /* Allow inheritance from utility classes */
+    font-family: inherit;
+    font-weight: 600;
+    border: 0;
+    cursor: pointer;
+    padding: 0.9em 1.6em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: nowrap;
+    border-radius: var(--radius);
+    
+    /* Glow Effect */
+    box-shadow: 
+        0 0 calc(var(--active) * 3em) calc(var(--active) * 1em) var(--glow-color),
+        0 0 0 0 transparent;
+        
+    transition: box-shadow var(--transition), scale var(--transition), background var(--transition), border-color var(--transition);
+    scale: calc(1 + (var(--active) * 0.05));
+    transform-style: preserve-3d;
+  
+    /* GLASS EDGES */
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    box-shadow: 
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        rgba(100, 0, 166, 0.1) 0px 4px 10px -2px;
+}
+
+.btn:active { scale: 1; }
+
+.btn:is(:hover, :focus-visible) {
+    --active: 1;
+}
+
+/* --- Hover BG --- */
+.hoverBg {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    opacity: 0; 
+    transition: opacity var(--transition);
+    z-index: 0; 
+    pointer-events: none;
+}
+.btn:is(:hover, :focus-visible) .hoverBg {
+    opacity: 1;
+}
+
+/* --- Backdrop --- */
+.backdrop {
+    position: absolute;
+    inset: var(--cut);
+    background: var(--bg-color);
+    border-radius: calc(var(--radius) - var(--cut));
+    transition: background var(--transition);
+    z-index: 2;
+}
+
+/* --- Spark --- */
+.spark {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    rotate: 0deg;
+    overflow: hidden;
+    mask: linear-gradient(white, transparent 50%);
+    animation: flip calc(var(--spark) * 2) infinite steps(2, end);
+    z-index: 1;
+}
+
+@keyframes flip { to { rotate: 360deg; } }
+
+.spark:before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    aspect-ratio: 1;
+    top: 0%; left: 50%;
+    z-index: -1;
+    translate: -50% -15%;
+    rotate: 0;
+    transform: rotate(-90deg);
+    opacity: calc((var(--active)) + 0.4);
+    background: conic-gradient(from 0deg, transparent 0 340deg, var(--spark-color) 360deg);
+    transition: opacity var(--transition);
+    animation: rotate var(--spark) linear infinite both;
+}
+@keyframes rotate { to { transform: rotate(90deg); } }
+
+/* --- Icon --- */
+.icon {
+    width: 1.25em;
+    height: 1.25em;
+    z-index: 3;
+    transition: transform var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--icon-color);
+}
+
+.iconWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:is(:hover, :focus-visible) .icon {
+    transform: scale(1.1) translateY(-2px);
+}
+
+/* --- Text --- */
+.text {
+    z-index: 3;
+    color: var(--text-color);
+    transition: color var(--transition);
+}
