@@ -104,7 +104,7 @@ const NavItem = ({ label, href }: { label: string; href: string }) => {
     <motion.a
       href={href}
       variants={navItemVariants}
-      className="relative px-3 py-2 text-xs md:text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+      className="relative px-2 md:px-3 py-2 text-[10px] sm:text-xs md:text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover={{ scale: 1.05 }}
@@ -132,13 +132,13 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className="fixed top-6 right-6 z-50"
+      className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
     >
       <motion.div
-        className="flex items-center justify-end overflow-hidden nav-expanded"
+        className="flex items-center justify-end overflow-hidden nav-expanded max-w-[calc(100vw-24px)]"
         variants={navContainerVariants}
         animate={showExpanded ? "expanded" : "collapsed"}
         onMouseEnter={() => setIsHovered(true)}
@@ -147,7 +147,7 @@ export function Navigation() {
         <AnimatePresence mode="wait">
           {showExpanded && (
             <motion.div
-              className="flex items-center pl-4"
+              className="flex items-center pl-2 md:pl-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
